@@ -163,17 +163,6 @@ The HTML dashboard communicates shuffle intents back to the agent via:
 
 ---
 
-## 📈 Scoring Notes
-
-To push toward max score:
-- [ ] Add grocery list generation (reads all ingredients from plan, deduplicates)
-- [ ] Add calorie chart (recharts or Chart.js in the HTML)
-- [ ] Deploy as Chrome Extension sidebar (wraps the MCP-UI iframe)
-- [ ] Add Spoonacular live API for dynamic recipe discovery
-- [ ] Add `export_to_pdf` tool using the PDF skill
-
----
-
 ## 📝 License
 
 MIT — share freely with attribution.
