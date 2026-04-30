@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weekly Meal Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700;900&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:         #0d0b08;
+    --surface:    #141210;
+    --card:       #1c1714;
+    --card-hover: #22201a;
+    --border:     #2a2420;
+    --border2:    #352e26;
+    --primary:    #f59e0b;
+    --primary-d:  #d97706;
+    --protein:    #10b981;
+    --carb:       #3b82f6;
+    --spice:      #ef4444;
+    --text:       #f0e6d3;
+    --text2:      #9e8a72;
+    --text3:      #5a4a38;
+    --font-h:     'Fraunces', serif;
+    --font-b:     'Plus Jakarta Sans', sans-serif;
+    --r:          12px;
+    --r-sm:       7px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font-b); min-height: 100vh; line-height: 1.5; }
+
+  /* ── Header ── */
+  .header {
+    background: linear-gradient(160deg, #1c1409 0%, #0d0b08 55%);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 28px 0;
+    position: sticky; top: 0; z-index: 100;
+    backdrop-filter: blur(14px);
+  }
+  .header-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+  .app-title { font-family: var(--font-h); font-size: 24px; font-weight: 700; color: var(--primary); letter-spacing: -.5px; }
+  .app-sub { font-size: 11px; color: var(--text2); margin-top: 2px; }
+  .week-badge {
+    background: #f59e0b18; color: var(--primary);
+    border: 1px solid #f59e0b30; border-radius: 20px;
+    padding: 4px 14px; font-size: 12px; font-weight: 600;
+  }
+  .stats-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .stat-pill {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 7px 14px;
+    display: flex; flex-direction: column; gap: 1px;
+  }
+  .stat-pill .val { font-family: var(--font-h); font-size: 18px; font-weight: 700; }
+  .stat-pill .lbl { font-size: 10px; color: var(--text2); text-transform: uppercase; letter-spacing: .5px; }
+  .cuisine-pills { display: flex; gap: 6px; align-items: center; }
+  .cuisine-pill { padding: 4px 10px; border-radius: 7px; font-size: 11px; font-weight: 600; }
+
+  /* ── Tabs ── */
+  .tabs { display: flex; gap: 0; border-top: 1px solid var(--border); margin: 0 -28px; }
+  .tab-btn {
+    flex: 1; padding: 11px 0; background: none; border: none;
+    color: var(--text2); font-family: var(--font-b); font-size: 13px;
+    font-weight: 600; cursor: pointer; transition: all .15s;
+    border-top: 2px solid transparent; margin-top: -1px;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--primary); border-top-color: var(--primary); }
+
+  /* ── Tab content ── */
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* ── Main layout ── */
+  .content { padding: 20px 28px; max-width: 1400px; margin: 0 auto; }
+
+  /* ── Day card ── */
+  .plan-list { display: flex; flex-direction: column; gap: 14px; }
+  .day-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r); overflow: hidden;
+    transition: border-color .2s;
+  }
+  .day-card:hover { border-color: #f59e0b30; }
+  .day-header {
+    padding: 14px 18px;
+    background: linear-gradient(to right, #1f1a0e, var(--card));
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .day-name-row { display: flex; flex-direction: column; min-width: 88px; }
+  .day-name { font-family: var(--font-h); font-size: 17px; font-weight: 700; }
+  .day-date { font-size: 10px; color: var(--text3); }
+  .workout-badge { border: 1px solid; border-radius: 20px; padding: 3px 11px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+  .day-macros { flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 5px; }
+  .macro-bar-row { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--text2); }
+  .macro-bar-row span:first-child { width: 52px; flex-shrink: 0; }
+  .bar { flex: 1; height: 4px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .fill { height: 100%; border-radius: 3px; transition: width .6s ease; }
+  .cal-fill { background: var(--primary); }
+  .pro-fill  { background: var(--protein); }
+  .macro-val { font-size: 10px; color: var(--text3); min-width: 80px; text-align: right; }
+
+  /* ── Meals row ── */
+  .meals-row { display: grid; grid-template-columns: 1fr 1fr 1fr; }
+  .meal-col { border-right: 1px solid var(--border); }
+  .meal-col:last-child { border-right: none; }
+  .meal-type-label {
+    padding: 7px 14px 5px; font-size: 10px; font-weight: 700;
+    letter-spacing: .8px; text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+  .breakfast-label { color: #fbbf24; background: #fbbf2406; }
+  .lunch-label     { color: #f97316; background: #f9731606; }
+  .dinner-label    { color: #818cf8; background: #818cf806; }
+
+  /* ── Meal card ── */
+  .meal-card { padding: 12px 14px; transition: background .15s; }
+  .meal-card:hover { background: var(--card-hover); }
+  .mc-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+  .mc-emoji { font-size: 20px; }
+  .mc-flags { display: flex; align-items: center; gap: 5px; font-size: 14px; }
+  .mc-spice { font-size: 9px; letter-spacing: -2px; }
+  .mc-name { font-family: var(--font-h); font-size: 13px; font-weight: 600; line-height: 1.3; margin-bottom: 4px; }
+  .mc-desc { font-size: 11px; color: var(--text2); line-height: 1.45; margin-bottom: 7px; }
+  .mc-macros { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 7px; }
+  .mc-stat {
+    font-size: 10px; color: var(--text2);
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 2px 6px; border-radius: 5px;
+  }
+  .mc-stat.protein { color: var(--protein); border-color: #10b98128; }
+  .mc-ingredients { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 6px; }
+  .ing {
+    font-size: 10px; color: var(--text3);
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 2px 6px; border-radius: 4px;
+  }
+  .ing.more { color: var(--primary); border-color: #f59e0b28; }
+  .mc-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 8px; }
+  .tag {
+    font-size: 9px; color: var(--text3);
+    background: var(--surface); border: 1px solid var(--border2);
+    padding: 1px 6px; border-radius: 3px; text-transform: uppercase; letter-spacing: .4px;
+  }
+  .mc-actions { display: flex; gap: 5px; }
+  .btn-shuffle, .btn-detail {
+    flex: 1; padding: 5px 0;
+    border: 1px solid var(--border); border-radius: var(--r-sm);
+    background: var(--surface); color: var(--text2);
+    font-size: 10px; font-family: var(--font-b); font-weight: 600;
+    cursor: pointer; transition: all .15s;
+  }
+  .btn-shuffle:hover { background: #f59e0b12; border-color: #f59e0b40; color: var(--primary); }
+  .btn-detail:hover  { background: #3b82f612; border-color: #3b82f640; color: var(--carb); }
+
+  /* ── Shopping List ── */
+  .shopping-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+  .shopping-title { font-family: var(--font-h); font-size: 22px; font-weight: 700; }
+  .btn-copy {
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text2); padding: 8px 16px; border-radius: 8px;
+    font-family: var(--font-b); font-size: 12px; font-weight: 600; cursor: pointer;
+    transition: all .15s;
+  }
+  .btn-copy:hover { border-color: var(--primary); color: var(--primary); }
+  .shopping-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+  .shop-category {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 14px;
+  }
+  .shop-cat-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; color: var(--primary); margin-bottom: 10px; }
+  .shop-item { display: flex; align-items: center; gap: 8px; padding: 5px 0; border-bottom: 1px solid var(--border); }
+  .shop-item:last-child { border-bottom: none; }
+  .shop-item input[type=checkbox] { accent-color: var(--primary); width: 14px; height: 14px; cursor: pointer; }
+  .shop-item label { font-size: 12px; color: var(--text2); cursor: pointer; flex: 1; }
+  .shop-item .shop-count { font-size: 10px; color: var(--text3); }
+
+  /* ── Settings ── */
+  .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media(max-width: 700px) { .settings-grid { grid-template-columns: 1fr; } }
+  .settings-section {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 18px;
+  }
+  .settings-section-title {
+    font-family: var(--font-h); font-size: 15px; font-weight: 700;
+    margin-bottom: 14px; color: var(--text);
+  }
+  .schedule-grid { display: flex; flex-direction: column; gap: 8px; }
+  .schedule-row { display: flex; align-items: center; gap: 8px; }
+  .schedule-day { width: 84px; font-size: 12px; color: var(--text2); }
+  .type-btns { display: flex; gap: 5px; }
+  .type-btn {
+    padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--text3); font-size: 11px;
+    font-family: var(--font-b); font-weight: 600; cursor: pointer; transition: all .15s;
+  }
+  .type-btn.active-gym     { background: #f9731618; border-color: #f9731640; color: #f97316; }
+  .type-btn.active-running { background: #3b82f618; border-color: #3b82f640; color: #3b82f6; }
+  .type-btn.active-rest    { background: #6b728018; border-color: #6b728040; color: #9ca3af; }
+  .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .metric-field label { display: block; font-size: 11px; color: var(--text2); margin-bottom: 5px; text-transform: uppercase; letter-spacing: .5px; }
+  .metric-field input {
+    width: 100%; background: var(--surface); border: 1px solid var(--border2);
+    border-radius: 8px; padding: 8px 12px; color: var(--text);
+    font-family: var(--font-b); font-size: 14px;
+  }
+  .metric-field input:focus { outline: none; border-color: var(--primary); }
+  .targets-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+  .target-row { display: flex; justify-content: space-between; font-size: 12px; }
+  .target-row span:first-child { color: var(--text2); }
+  .target-row span:last-child  { color: var(--text); font-weight: 600; }
+  .btn-save-settings {
+    margin-top: 16px; width: 100%; padding: 10px;
+    background: var(--primary); border: none; border-radius: 8px;
+    color: #0d0b08; font-family: var(--font-b); font-size: 13px; font-weight: 700;
+    cursor: pointer; transition: background .15s;
+  }
+  .btn-save-settings:hover { background: var(--primary-d); }
+  .settings-note {
+    margin-top: 20px; padding: 12px 16px;
+    background: #f59e0b0a; border: 1px solid #f59e0b25;
+    border-radius: 8px; font-size: 12px; color: var(--text2); line-height: 1.6;
+  }
+  .settings-note code { background: var(--surface); padding: 1px 5px; border-radius: 4px; color: var(--primary); font-size: 11px; }
+
+  /* ── Modal ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: #00000095; backdrop-filter: blur(6px);
+    z-index: 999; justify-content: center; align-items: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--card); border: 1px solid var(--border2);
+    border-radius: 18px; padding: 26px; max-width: 440px; width: 92%;
+    max-height: 82vh; overflow-y: auto;
+    animation: slideUp .2s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(18px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .modal-title { font-family: var(--font-h); font-size: 20px; font-weight: 700; margin-bottom: 14px; color: var(--primary); }
+  .modal-section { margin-bottom: 14px; }
+  .modal-label { font-size: 10px; text-transform: uppercase; letter-spacing: .8px; color: var(--text3); margin-bottom: 5px; }
+  .modal-value { font-size: 13px; color: var(--text2); line-height: 1.6; }
+  .macros-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .macro-box { background: var(--surface); border: 1px solid var(--border); border-radius: 9px; padding: 9px; text-align: center; }
+  .macro-box .val { font-family: var(--font-h); font-size: 16px; font-weight: 700; }
+  .macro-box .unit { font-size: 10px; color: var(--text3); }
+  .tag-list { display: flex; flex-wrap: wrap; gap: 5px; }
+  .modal-tag { background: var(--surface); border: 1px solid var(--border); border-radius: 5px; padding: 3px 8px; font-size: 11px; color: var(--text2); }
+  .btn-close {
+    width: 100%; margin-top: 14px; padding: 10px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 9px; color: var(--text2);
+    font-family: var(--font-b); font-size: 13px; cursor: pointer;
+  }
+  .btn-close:hover { border-color: var(--spice); color: var(--spice); }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed; bottom: 22px; right: 22px;
+    background: #162616; border: 1px solid #10b98140;
+    color: #10b981; padding: 10px 18px; border-radius: 9px;
+    font-size: 12px; font-weight: 600; z-index: 9999;
+    opacity: 0; transform: translateY(8px);
+    transition: all .25s ease; pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.error { background: #1e1010; border-color: #ef444440; color: #ef4444; }
+
+  /* ── Responsive ── */
+  @media(max-width: 820px) {
+    .meals-row { grid-template-columns: 1fr; }
+    .meal-col { border-right: none; border-bottom: 1px solid var(--border); }
+    .meal-col:last-child { border-bottom: none; }
+    .header { padding: 16px 16px 0; }
+    .tabs { margin: 0 -16px; }
+    .content { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="app-title">🍽️ Meal Planner</div>
+      <div class="app-sub">Vegetarian · Protein-Rich · Workout-Aware · 70kg · 168cm</div>
+    </div>
+    <span class="week-badge">Week 2026-W18</span>
+  </div>
+  <div class="stats-row">
+    <div class="stat-pill">
+      <span class="val">1576</span>
+      <span class="lbl">Avg kcal/day</span>
+    </div>
+    <div class="stat-pill">
+      <span class="val" style="color:var(--protein)">67g</span>
+      <span class="lbl">Avg protein/day</span>
+    </div>
+    <div class="stat-pill">
+      <span class="val">21</span>
+      <span class="lbl">Total meals</span>
+    </div>
+    <div class="stat-pill">
+      <div class="cuisine-pills">
+        <span class="cuisine-pill" style="background:#f59e0b14;color:#f59e0b">🇮🇳 14</span>
+        <span class="cuisine-pill" style="background:#ef444414;color:#ef4444">🇨🇳 5</span>
+        <span class="cuisine-pill" style="background:#3b82f614;color:#3b82f6">🇮🇹 2</span>
+      </div>
+      <span class="lbl" style="margin-top:4px">Cuisine mix</span>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('plan')">📅 Week Plan</button>
+    <button class="tab-btn" onclick="switchTab('shopping')">🛒 Shopping List</button>
+    <button class="tab-btn" onclick="switchTab('settings')">⚙️ Settings</button>
+  </div>
+</div>
+
+<!-- ── Plan tab ── -->
+<div id="tab-plan" class="tab-content active">
+  <div class="content">
+    <div class="plan-list">
+      
+  <div class="day-card">
+    <div class="day-header">
+      <div class="day-name-row">
+        <span class="day-name">Monday</span>
+        <span class="day-date">2026-04-27</span>
+      </div>
+      <div class="workout-badge" style="background:#f9731618;color:#f97316;border-color:#f9731635">
+        🏋️ Gym Day
+      </div>
+      <div class="day-macros">
+        <div class="macro-bar-row">
+          <span>Calories</span>
+          <div class="bar"><div class="fill cal-fill" style="width:73%"></div></div>
+          <span class="macro-val">1630 / 2240</span>
+        </div>
+        <div class="macro-bar-row">
+          <span>Protein</span>
+          <div class="bar"><div class="fill pro-fill" style="width:54%"></div></div>
+          <span class="macro-val">76g / 140g</span>
+        </div>
+      </div>
+    </div>
+    <div class="meals-row">
+      <div class="meal-col">
+        <div class="meal-type-label breakfast-label">🌅 Breakfast</div>
+        
+  <div class="meal-card" id="card-Monday-breakfast" data-id="b-chi-001" data-day="Monday" data-type="breakfast">
+    <div class="mc-top">
+      <span class="mc-emoji">🥢</span>
+      <div class="mc-flags">
+        <span>🇨🇳</span>
+        <span class="mc-spice"><span class="spice-dot filled">🌶</span><span class="spice-dot ">🌶</span><span class="spice-dot ">🌶</span></span>
+      </div>
+    </div>
+    <div class="mc-name">Tofu Scramble</div>
+    <div class="mc-desc">Silky scrambled tofu seasoned to golden perfection.</div>
+    <div class="mc-macros">
+      <span class="mc-stat">⚡ 280</span>
+      <span class="mc-stat protein">💪 20g</span>
+      <span class="mc-stat">⏱ 12m</span>
+    </div>
+    <div class="mc-ingredients">
+      <span class="ing">firm tofu</span><span class="ing">turmeric</span><span class="ing">nutritional yeast</span><span class="ing more">+3</span>
+    </div>
+    <div class="mc-tags"><span class="tag">high protein</span><span class="tag">low carb</span><span class="tag">gym day</span></div>
+    <div class="mc-actions">
+      <button class="btn-shuffle" onclick="shuffleMeal('Monday','breakfast','b-chi-001')">🔀 Shuffle</button>
+      <button class="btn-detail" onclick="showDetail('b-chi-001','Monday','breakfast')">📋 Details</button>
+    </div>
+  </div>
+      </div>
+      <div class="meal-col">
+        <div class="meal-type-label lunch-label">☀️ Lunch</div>
+        
+  <div class="meal-card" id="card-Monday-lunch" data-id="l-ita-001" data-day="Monday" data-type="lunch">
+    <div class="mc-top">
+      <span class="mc-emoji">🍝</span>
+      <div class="mc-flags">
+        <span>🇮🇹</span>
+        <span class="mc-spice"><span class="spice-dot filled">🌶</span><span class="spice-dot ">🌶</span><span class="spice-dot ">🌶</span></span>
+      </div>
+    </div>
+    <div class="mc-name">Rigatoni Lentil Bolognese</div>
+    <div class="mc-desc">Hearty lentil bolognese on thick rigatoni with parmesan.</div>
+    <div class="mc-macros">
+      <span class="mc-stat">⚡ 700</span>
+      <span class="mc-stat protein">💪 28g</span>
+      <span class="mc-stat">⏱ 40m</span>
+    </div>
+    <div class="mc-ingredients">
+      <span class="ing">rigatoni</span><span class="ing">green lentils</span><span class="ing">tomatoes</span><span class="ing more">+5</span>
+    </div>
+    <div class="mc-tags"><span class="tag">high protein</span><span class="tag">gym day</span><span class="tag">comfort food</span></div>
+    <div class="mc-actions">
+      <button class="btn-shuffle" onclick="shuffleMeal('Monday','lunch','l-ita-001')">🔀 Shuffle</button>
+      <button class="btn-detail" onclick="showDetail('l-ita-001','Monday','lunch')">📋 Details</button>
+    </div>
+  </div>
+      </div>
+      <div class="meal-col">
+        <div class="meal-type-label dinner-label">🌙 Dinner</div>
+        
+  <div class="meal-card" id="card-Monday-dinner" data-id="l-ind-001" data-day="Monday" data-type="dinner">
+    <div class="mc-top">
+      <span class="mc-emoji">🍛</span>
+      <div class="mc-flags">
+        <span>🇮🇳</span>
+        <span class="mc-spice"><span class="spice-dot filled">🌶</span><span class="spice-dot filled">🌶</span><span class="spice-dot ">🌶</span></span>
+      </div>
+    </div>
+    <div class="mc-name">Dal Makhani + Roti + Salad</div>
+    <div class="mc-desc">Slow-cooked creamy black lentils with rich buttery gravy.</div>
+    <div class="mc-macros">
+      <span class="mc-stat">⚡ 650</span>
+      <span class="mc-stat protein">💪 28g</span>
+      <span class="mc-stat">⏱ 45m</span>
+    </div>
+    <div class="mc-ingredients">
+      <span class="ing">whole black lentils</span><span class="ing">rajma</span><span class="ing">butter</span><span class="ing more">+5</span>
+    </div>
+    <div class="mc-tags"><span class="tag">high protein</span><span class="tag">gym day</span><span class="tag">classic</span></div>
+    <div class="mc-actions">
+      <button class="btn-shuffle" onclick="shuffleMeal('Monday','dinner','l-ind-001')">🔀 Shuffle</button>
+      <button class="btn-detail" onclick="showDetail('l-ind-001','Monday','dinner')">📋 Details</button>
+    </div>
+  </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header">
+      <div class="day-name-row">
+        <span class="day-name">Tuesday</span>
+        <span class="day-date">2026-04-28</span>
+      </div>
+      <div class="workout-badge" style="background:#3b82f618;color:#3b82f6;border-color:#3b82f635">
+        🏃 Run Day
+      </div>
+      <div class="day-macros">
+        <div class="macro-bar-row">
+          <span>Calories</span>
+          <div class="bar"><div class="fill cal-fill" style="width:80%"></div></div>
+          <span class="macro-val">1630 / 2030</span>
+        </div>
+        <div class="macro-bar-row">
+          <span>Protein</span>
+          <div class="bar"><div class="fill pro-fill" style="width:48%"></div></div>
+          <span class="macro-val">57g / 119g</span>
+        </div>
+      </div>
+    </div>
+    <div class="meals-row">
+      <div class="meal-col">
+        <div class="meal-type-label breakfast-label">🌅 Breakfast</div>
+        
+  <div class="meal-card" id="card-Tuesday-breakfast" data-id="b-ind-005" data-day="Tuesday" data-type="breakfast">
+    <div class="mc-top">
+      <span class="mc-emoji">🍚</span>
+      <div class="mc-flags">
+        <span>🇮🇳</span>
+        <span class="mc-spice"><span class="spice-dot filled">🌶</span><span class="spice-dot ">🌶</span><span class="spice-dot ">🌶</span></span>
+      </div>
+    </div>
+    <div class="mc-name">Poha with Peanuts</div>
+    <div class="mc-desc">Classic beaten rice with crunchy peanuts and mustard tempering.</div>
+    <div class="mc-macros">
+      <span class="mc-stat">⚡ 310</span>
+      <span class="mc-stat protein">💪 10g</span>
+      <span class="mc-stat">⏱ 15m</span>
+    </div>
+    <div class="mc-ingredients">
+      <span class="ing">flattened rice</span><span class="ing">peanuts</span><span class="ing">mustard seeds</span><span class="ing more">+4</span>
+    </div>
+    <div class="mc-tags"><span class="tag">carb boost</span><span class="tag">running day</span><span class="tag">quick</span></div>
+    <div class="mc-actions">
+      <button class="btn-shuffle" onclick="shuffleMeal('Tuesday','breakfast','b-ind-005')">🔀 Shuffle</button>
+      <button class="btn-detail" onclick="showDetail('b-ind-005','Tuesday','breakfast')">📋 Details</button>
+    </div>
+  </div>
+      </div>
+      <div class="meal-col">
+        <div class="meal-type-label lunch-label">☀️ Lunch</div>
+        
+  <div class="meal-card" id="card-Tuesday-lunch" data-id="l-ind-002" data-day="Tuesday" data-type="lunch">
+    <div class="mc-top">
+      <span class="mc-emoji">🫘</span>
+      <div class="mc-flags">
+        <span>🇮🇳</span>
+        <span class="mc-spice"><span class="spice-dot filled">🌶</span><span class="spice-dot filled">🌶</span><span class="spice-dot ">🌶</span></span>
+      </div>
+    </div>
+    <div class="mc-name">Rajma Chawal + Raita</div>
+    <div class="mc-desc">North Indian kidney bean curry over basmati with cooling raita.</div>
+    <div class="mc-macros">
+      <span class="mc-stat">⚡ 700</span>
+      <span class="mc-stat protein">💪 25g</span>
+      <span class="mc-stat">⏱ 40m</span>
+    </div>
+    <div class="mc-ingredients">
+      <span class="ing">kidney beans</span><span class="ing">basmati rice</span><span class="ing">tomato</span><span class="ing more">+4</span>
+    </div>
+    <div class="mc-tags"><span class="tag">high carb</span><span class="tag">running day</span><span class="tag">comfort food</span></div>
+    <div class="mc-actions">
+      <button class="btn-shuffle" onclick="shuffleMeal('Tuesday','lunch','l-ind-002')">🔀 Shuffle</button>
+      <button class="btn-detail" onclick="showDetail('l-ind-002','Tuesday','lunch')">📋 Details</button>
+    </div>
+  </div>
+      </div>
+      <div class="meal-col">
+        <div class="meal-type-label dinner-label">🌙 Dinner</div>
+        
+  <div class="meal-card" id="card-Tuesday-dinner" data-id="l-chi-001" data-day="Tuesday" data-type="dinner">
+    <div class="mc-top">
+      <span class="mc-emoji">🍳</span>
+      <div class="mc-flags">
+        <span>🇨🇳</span>
+        <span class="mc-spice"><span class="spice-dot filled">🌶</span><span class="spice-dot ">🌶</span><span class="spice-dot ">🌶</span></span>
+      </div>
+    </div>
+    <div class="mc-name">Tofu Fried Rice + Veg Soup</div>
+    <div class="mc-desc">Wok-tossed tofu and vegetable fried rice with clear soup.</div>
+    <div class="mc-macros">
+      <span class="mc-stat">⚡ 620</span>
+      <span class="mc-stat protein">💪 22g</span>
+      <span class="mc-stat">⏱ 25m</span>
+    </div>
+    <div class="mc-ingredients">
+      <span class="ing">tofu</span><span class="ing">cooked rice</span><span class="ing">soy sauce</span><span class="ing more">+5</span>
+    </div>
+    <div class="mc-tags"><span class="tag">high carb</span><span class="tag">running day</span><span class="tag">quick</span></div>
+    <div class="mc-actions">
+      <button class="btn-shuffle" onclick="shuffleMeal('Tuesday','dinner','l-chi-001')">🔀 Shuffle</button>
+      <button class="btn-detail" onclick="showDetail('l-chi-001','Tuesday','dinner')">📋 Details</button>
+    </div>
+  </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header">
+      <div class="day-name-row">
+        <span class="day-name">Wednesday</span>
+        <span class="day-date">2026-04-29</span>
+      </div>
+      <div class="workout-badge" style="background:#f9731618;color:#f97316;border-color:#f9731635">
+        🏋️ Gym Day
+      </div>
+      <div class="day-macros">
+        <div class="macro-bar-row">
+          <span>Calories</span>
+          <div class="bar"><div class="fill cal-fill" style="width:75%"></div></div>
+          <span class="macro-val">1690 / 2240</span>
+        </div>
+        <div class="macro-bar-row">
+          <span>Protein</span>
+          <div class="bar"><div class="fill pro-fill" style="width:56%"></div></div>
+          <span class="macro-val">78g / 140g</span>
+        </div>
+      </div>
+    </div>
+    <div class="meals-row">
+      <div class="meal-col">
+        <div class="meal-type-label breakfast-label">🌅 Breakfast</div>
+        
+  <div class="meal-card" id="card-Wednesday-breakfast" data-id="b-ind-001" data-day="Wednesday" data-type="breakfast">
+    <div class="mc-top">
+      <span class="mc-emoji">🥞</span>
+      <div class="mc-flags">
+        <span>🇮🇳</span>
+        <span class="mc-spice"><span class="spice-dot filled">🌶</span><span class="spice-dot filled">🌶</span><span class="spice-dot ">🌶</span></span>
+      </div>
+    </div>
+    <div class="mc-name">Moong Dal Chilla</div>
+    <div class="mc-desc">Protein-packed savoury lentil crepes with herbs and spices.</div>
+    <div class="mc-macros">
+      <span class="mc-stat">⚡ 320</span>
+      <span class="mc-stat protein">💪 18g</span>
+      <span class="mc-stat">⏱ 20m</span>
+    </div>
+    <div class="mc-ingredients">
+      <span class="ing">moong dal</span><span class="ing">onion</span><span class="ing">green chilli</span><span class="ing more">+4</span>
+    </div>
+    <div class="mc-tags"><span class="tag">high protein</span><span class="tag">quick</span><span class="tag">gym day</span></div>
+    <div class="mc-actions">
+      <button class="btn-shuffle" onclick="shuffleMeal('Wednesday','breakfast','b-ind-001')">🔀 Shuffle</button>
+      <button class="btn-detail" onclick="showDetail('b-ind-001','Wednesday','breakfast')">📋 Details</button>
+    </div>
+  </div>
+      </div>
+      <div class="meal-col">
+        <div class="meal-type-label lunch-label">☀️ Lunch</div>
+        
+  <div class="meal-card" id="card-Wednesday-lunch" data-id="l-ita-004" data-day="Wednesday" data-type="lunch">
+    <div class="mc-top">
+      <span class="mc-emoji">🫘</span>
+      <div class="mc-flags">
+        <span>🇮🇹</span>
+        <span class="mc-spice"><span class="spice-dot filled">🌶</span><span class="spice-dot ">🌶</span><span class="spice-dot ">🌶</span></span>
+      </div>
+    </div>
+    <div class="mc-name">Pasta e Fagioli</div>
+    <div class="mc-desc">Tuscan pasta and bean soup — rustic, hearty, and nourishing.</div>
+    <div class="mc-macros">
+      <span class="mc-stat">⚡ 620</span>
+      <span class="mc-stat protein">💪 25g</span>
+      <span class="mc-stat">⏱ 35m</span>
+    </div>
+    <div class="mc-ingredients">
+      <span class="ing">ditalini pasta</span><span class="ing">cannellini beans</span><span class="ing">tomatoes</span><span class="ing more">+4</span>
+    </div>
+    <div class="mc-tags"><span class="tag">high protein</span><span class="tag">gym day</span><span class="tag">comforting</span></div>
+    <div class="mc-actions">
+      <button class="btn-shuffle" onclick="shuffleMeal('Wednesday','lunch','l-ita-004')">🔀 Shuffle</button>
+      <button class="btn-detail" onclick="showDetail('l-ita-004','Wednesday','lunch')">📋 Details</button>
+    </div>
+  </div>
+      </div>
+      <div class="meal-col">
+        <div class="meal-type-label dinner-label">🌙 Dinner</div>
+        
+  <div class="meal-card" id="card-Wednesday-dinner" data-id="l-ind-003" data-day="Wednesday" data-type="dinner">
+    <div class="mc-top">
+      <span class="mc-emoji">🟠</span>
+      <div class="mc-flags">
+        <span>🇮🇳</span>
+        <span class="mc-spice"><span class="spice-dot filled">🌶</span><span class="spice-dot filled">🌶</span><span class="spice-dot ">🌶</span></span>
+      </div>
+    </div>
+    <div class="mc-name">Paneer Tikka Masala + Roti</div>
+    <div class="mc-desc">Chargrilled paneer in velvety spiced tomato-cream sauce.</div>
+    <div class="mc-macros">
+      <span class="mc-stat">⚡ 750</span>
+      <span class="mc-stat protein">💪 35g</span>
+      <span class="mc-stat">⏱ 40m</span>
+    </div>
+    <div class="mc-ingredients">
+      <span class="ing">paneer</span><span class="ing">yogurt marinade</span><span class="ing">tomato gravy</span><span class="ing more">+3</span>
+    </div>
+    <div class="mc-tags"><span class="tag">high protein</span><span class="tag">gym day</span><span class="tag">restaurant style</span></div>
+    <div class="mc-actions">
+      <button class="btn-shuffle" onclick="shuffleMeal('Wednesday','dinner','l-ind-003')">🔀 Shuffle</button>
+      <button class="btn-detail" onclick="showDetail('l-ind-003','Wednesday','dinner')">📋 Details</button>
+    </div>
+  </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header">
+      <div class="day-name-row">
+        <span class="day-name">Thursday</span>
+        <span class="day-date">2026-04-30</span>
+      </div>
+      <div class="workout-badge" style="background:#6b728018;color:#6b7280;border-color:#6b728035">
+        😴 Rest Day
+      </div>
+      <div class="day-macros">
+        <div class="macro-bar-row">
+          <span>Calories</span>
+          <div class="bar"><div class="fill cal-fill" style="width:85%"></div></div>
+          <span class="macro-val">1490 / 1750</span>
+        </div>
+        <div class="macro-bar-row">
+          <span>Protein</span>
+          <div class="bar"><div class="fill pro-fill" style="width:68%"></div></div>
+          <span class="macro-val">67g / 98g</span>
+        </div>
+      </div>
+    </div>
+    <div class="meals-row">
+      <div class="meal-col">
+        <div class="meal-type-label breakfast-label">🌅 Breakfast</div>
+        
+  <div class="meal-card" id="card-Thursday-breakfast" data-id="b-ind-002" data-day="Thursday" data-type="breakfast">
+    <div class="mc-top">
+      <span class="mc-emoji">🥚</span>
+      <div class="mc-flags">
+        <span>🇮🇳</span>
+        <span class="mc-spice"><span class="spice-dot filled">🌶</span><span class="spice-dot filled">🌶</span><span class="spice-dot ">🌶</span></span>
+      </div>
+    </div>
+    <div class="mc-name">Besan Cheela with Paneer</div>
+    <div class="mc-desc">Crispy chickpea flour crepes stuffed with spiced paneer.</div>
+    <div class="mc-macros">
+      <span class="mc-stat">⚡ 360</span>
+      <span class="mc-stat protein">💪 22g</span>
+      <span class="mc-stat">⏱ 15m</span>
+    </div>
+    <div class="mc-ingredients">
+      <span class="ing">besan</span><span class="ing">paneer</span><span class="ing">onion</span><span class="ing more">+4</span>
+    </div>
+    <div class="mc-tags"><span class="tag">high protein</span><span class="tag">gym day</span><span class="tag">filling</span></div>
+    <div class="mc-actions">
+      <button class="btn-shuffle" onclick="shuffleMeal('Thursday','breakfast','b-ind-002')">🔀 Shuffle</button>
+      <button class="btn-detail" onclick="showDetail('b-ind-002','Thursday','breakfast')">📋 Details</button>
+    </div>
+  </div>
+      </div>
+      <div class="meal-col">
+        <div class="meal-type-label lunch-label">☀️ Lunch</div>
+        
+  <div class="meal-card" id="card-Thursday-lunch" data-id="l-chi-004" data-day="Thursday" data-type="lunch">
+    <div class="mc-top">
+      <span class="mc-emoji">🥟</span>
+      <div class="mc-flags">
+        <span>🇨🇳</span>
+        <span class="mc-spice"><span class="spice-dot filled">🌶</span><span class="spice-dot ">🌶</span><span class="spice-dot ">🌶</span></span>
+      </div>
+    </div>
+    <div class="mc-name">Veg Dimsum + Miso Broth</div>
+    <div class="mc-desc">Steamed dumplings filled with tofu and vegetables in umami broth.</div>
+    <div class="mc-macros">
+      <span class="mc-stat">⚡ 550</span>
+      <span class="mc-stat protein">💪 20g</span>
+      <span class="mc-stat">⏱ 35m</span>
+    </div>
+    <div class="mc-ingredients">
+      <span class="ing">dumpling wrappers</span><span class="ing">tofu</span><span class="ing">cabbage</span><span class="ing more">+5</span>
+    </div>
+    <div class="mc-tags"><span class="tag">light</span><span class="tag">rest day</span><span class="tag">elegant</span></div>
+    <div class="mc-actions">
+      <button class="btn-shuffle" onclick="shuffleMeal('Thursday','lunch','l-chi-004')">🔀 Shuffle</button>
+      <button class="btn-detail" onclick="showDetail('l-chi-004','Thursday','lunch')">📋 Details</button>
+    </div>
+  </div>
+      </div>
+      <div class="meal-col">
+        <div class="meal-type-label dinner-label">🌙 Dinner</div>
+        
+  <div class="meal-card" id="card-Thursday-dinner" data-id="l-chi-002" data-day="Thursday" data-type="dinner">
+    <div class="mc-top">
+      <span class="mc-emoji">🌶️</span>
+      <div class="mc-flags">
+        <span>🇨🇳</span>
+        <span class="mc-spice"><span class="spice-dot filled">🌶</span><span class="spice-dot filled">🌶</span><span class="spice-dot ">🌶</span></span>
+      </div>
+    </div>
+    <div class="mc-name">Mapo Tofu (Veg) + Steamed Rice</div>
+    <div class="mc-desc">Silky tofu in spicy aromatic sauce with numbing Sichuan pepper.</div>
+    <div class="mc-macros">
+      <span class="mc-stat">⚡ 580</span>
+      <span class="mc-stat protein">💪 25g</span>
+      <span class="mc-stat">⏱ 20m</span>
+    </div>
+    <div class="mc-ingredients">
+      <span class="ing">silken tofu</span><span class="ing">doubanjiang</span><span class="ing">garlic</span><span class="ing more">+4</span>
+    </div>
+    <div class="mc-tags"><span class="tag">high protein</span><span class="tag">gym day</span><span class="tag">bold flavour</span></div>
+    <div class="mc-actions">
+      <button class="btn-shuffle" onclick="shuffleMeal('Thursday','dinner','l-chi-002')">🔀 Shuffle</button>
+      <button class="btn-detail" onclick="showDetail('l-chi-002','Thursday','dinner')">📋 Details</button>
+    </div>
+  </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header">
+      <div class="day-name-row">
+        <span class="day-name">Friday</span>
+        <span class="day-date">2026-05-01</span>
+      </div>
+      <div class="workout-badge" style="background:#f9731618;color:#f97316;border-color:#f9731635">
+        🏋️ Gym Day
+      </div>
+      <div class="day-macros">
+        <div class="macro-bar-row">
+          <span>Calories</span>
+          <div class="bar"><div class="fill cal-fill" style="width:76%"></div></div>
+          <span class="macro-val">1700 / 2240</span>
+        </div>
+        <div class="macro-bar-row">
+          <span>Protein</span>
+          <div class="bar"><div class="fill pro-fill" style="width:61%"></div></div>
+          <span class="macro-val">86g / 140g</span>
+        </div>
+      </div>
+    </div>
+    <div class="meals-row">
+      <div class="meal-col">
+        <div class="meal-type-label breakfast-label">🌅 Breakfast</div>
+        
+  <div class="meal-card" id="card-Friday-breakfast" data-id="b-ind-003" data-day="Friday" data-type="breakfast">
+    <div class="mc-top">
+      <span class="mc-emoji">🍞</span>
+      <div class="mc-flags">
+        <span>🇮🇳</span>
+        <span class="mc-spice"><span class="spice-dot filled">🌶</span><span class="spice-dot filled">🌶</span><span class="spice-dot ">🌶</span></span>
+      </div>
+    </div>
+    <div class="mc-name">Paneer Bhurji Toast</div>
+    <div class="mc-desc">Scrambled paneer with veggies on whole wheat toast.</div>
+    <div class="mc-macros">
+      <span class="mc-stat">⚡ 380</span>
+      <span class="mc-stat protein">💪 24g</span>
+      <span class="mc-stat">⏱ 15m</span>
+    </div>
+    <div class="mc-ingredients">
+      <span class="ing">paneer</span><span class="ing">onion</span><span class="ing">capsicum</span><span class="ing more">+4</span>
+    </div>
+    <div class="mc-tags"><span class="tag">high protein</span><span class="tag">gym day</span></div>
+    <div class="mc-actions">
+      <button class="btn-shuffle" onclick="shuffleMeal('Friday','breakfast','b-ind-003')">🔀 Shuffle</button>
+      <button class="btn-detail" onclick="showDetail('b-ind-003','Friday','breakfast')">📋 Details</button>
+    </div>
+  </div>
+      </div>
+      <div class="meal-col">
+        <div class="meal-type-label lunch-label">☀️ Lunch</div>
+        
+  <div class="meal-card" id="card-Friday-lunch" data-id="l-ind-005" data-day="Friday" data-type="lunch">
+    <div class="mc-top">
+      <span class="mc-emoji">🥬</span>
+      <div class="mc-flags">
+        <span>🇮🇳</span>
+        <span class="mc-spice"><span class="spice-dot filled">🌶</span><span class="spice-dot filled">🌶</span><span class="spice-dot ">🌶</span></span>
+      </div>
+    </div>
+    <div class="mc-name">Tofu Bhurji + Roti + Dal</div>
+    <div class="mc-desc">Indian-spiced tofu scramble with simple moong dal and roti.</div>
+    <div class="mc-macros">
+      <span class="mc-stat">⚡ 620</span>
+      <span class="mc-stat protein">💪 30g</span>
+      <span class="mc-stat">⏱ 25m</span>
+    </div>
+    <div class="mc-ingredients">
+      <span class="ing">firm tofu</span><span class="ing">onion</span><span class="ing">tomato</span><span class="ing more">+4</span>
+    </div>
+    <div class="mc-tags"><span class="tag">high protein</span><span class="tag">gym day</span><span class="tag">quick</span></div>
+    <div class="mc-actions">
+      <button class="btn-shuffle" onclick="shuffleMeal('Friday','lunch','l-ind-005')">🔀 Shuffle</button>
+      <button class="btn-detail" onclick="showDetail('l-ind-005','Friday','lunch')">📋 Details</button>
+    </div>
+  </div>
+      </div>
+      <div class="meal-col">
+        <div class="meal-type-label dinner-label">🌙 Dinner</div>
+        
+  <div class="meal-card" id="card-Friday-dinner" data-id="l-ind-006" data-day="Friday" data-type="dinner">
+    <div class="mc-top">
+      <span class="mc-emoji">🌿</span>
+      <div class="mc-flags">
+        <span>🇮🇳</span>
+        <span class="mc-spice"><span class="spice-dot filled">🌶</span><span class="spice-dot filled">🌶</span><span class="spice-dot ">🌶</span></span>
+      </div>
+    </div>
+    <div class="mc-name">Methi Paneer + Roti + Dal</div>
+    <div class="mc-desc">Paneer with slightly bitter fenugreek in rich gravy.</div>
+    <div class="mc-macros">
+      <span class="mc-stat">⚡ 700</span>
+      <span class="mc-stat protein">💪 32g</span>
+      <span class="mc-stat">⏱ 30m</span>
+    </div>
+    <div class="mc-ingredients">
+      <span class="ing">paneer</span><span class="ing">fresh fenugreek</span><span class="ing">onion</span><span class="ing more">+4</span>
+    </div>
+    <div class="mc-tags"><span class="tag">high protein</span><span class="tag">gym day</span></div>
+    <div class="mc-actions">
+      <button class="btn-shuffle" onclick="shuffleMeal('Friday','dinner','l-ind-006')">🔀 Shuffle</button>
+      <button class="btn-detail" onclick="showDetail('l-ind-006','Friday','dinner')">📋 Details</button>
+    </div>
+  </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header">
+      <div class="day-name-row">
+        <span class="day-name">Saturday</span>
+        <span class="day-date">2026-05-02</span>
+      </div>
+      <div class="workout-badge" style="background:#3b82f618;color:#3b82f6;border-color:#3b82f635">
+        🏃 Run Day
+      </div>
+      <div class="day-macros">
+        <div class="macro-bar-row">
+          <span>Calories</span>
+          <div class="bar"><div class="fill cal-fill" style="width:73%"></div></div>
+          <span class="macro-val">1480 / 2030</span>
+        </div>
+        <div class="macro-bar-row">
+          <span>Protein</span>
+          <div class="bar"><div class="fill pro-fill" style="width:51%"></div></div>
+          <span class="macro-val">61g / 119g</span>
+        </div>
+      </div>
+    </div>
+    <div class="meals-row">
+      <div class="meal-col">
+        <div class="meal-type-label breakfast-label">🌅 Breakfast</div>
+        
+  <div class="meal-card" id="card-Saturday-breakfast" data-id="b-ind-004" data-day="Saturday" data-type="breakfast">
+    <div class="mc-top">
+      <span class="mc-emoji">🌱</span>
+      <div class="mc-flags">
+        <span>🇮🇳</span>
+        <span class="mc-spice"><span class="spice-dot filled">🌶</span><span class="spice-dot ">🌶</span><span class="spice-dot ">🌶</span></span>
+      </div>
+    </div>
+    <div class="mc-name">Sprout Chaat</div>
+    <div class="mc-desc">Light and refreshing sprouted lentil salad with tangy dressing.</div>
+    <div class="mc-macros">
+      <span class="mc-stat">⚡ 220</span>
+      <span class="mc-stat protein">💪 14g</span>
+      <span class="mc-stat">⏱ 10m</span>
+    </div>
+    <div class="mc-ingredients">
+      <span class="ing">mixed sprouts</span><span class="ing">tomato</span><span class="ing">onion</span><span class="ing more">+4</span>
+    </div>
+    <div class="mc-tags"><span class="tag">light</span><span class="tag">running day</span><span class="tag">no cook</span></div>
+    <div class="mc-actions">
+      <button class="btn-shuffle" onclick="shuffleMeal('Saturday','breakfast','b-ind-004')">🔀 Shuffle</button>
+      <button class="btn-detail" onclick="showDetail('b-ind-004','Saturday','breakfast')">📋 Details</button>
+    </div>
+  </div>
+      </div>
+      <div class="meal-col">
+        <div class="meal-type-label lunch-label">☀️ Lunch</div>
+        
+  <div class="meal-card" id="card-Saturday-lunch" data-id="l-ind-004" data-day="Saturday" data-type="lunch">
+    <div class="mc-top">
+      <span class="mc-emoji">🟡</span>
+      <div class="mc-flags">
+        <span>🇮🇳</span>
+        <span class="mc-spice"><span class="spice-dot filled">🌶</span><span class="spice-dot filled">🌶</span><span class="spice-dot ">🌶</span></span>
+      </div>
+    </div>
+    <div class="mc-name">Chana Masala + Jeera Rice</div>
+    <div class="mc-desc">Tangy spiced chickpea curry with fragrant cumin rice.</div>
+    <div class="mc-macros">
+      <span class="mc-stat">⚡ 680</span>
+      <span class="mc-stat protein">💪 22g</span>
+      <span class="mc-stat">⏱ 35m</span>
+    </div>
+    <div class="mc-ingredients">
+      <span class="ing">chickpeas</span><span class="ing">onion</span><span class="ing">tomato</span><span class="ing more">+4</span>
+    </div>
+    <div class="mc-tags"><span class="tag">high carb</span><span class="tag">running day</span><span class="tag">vegan</span></div>
+    <div class="mc-actions">
+      <button class="btn-shuffle" onclick="shuffleMeal('Saturday','lunch','l-ind-004')">🔀 Shuffle</button>
+      <button class="btn-detail" onclick="showDetail('l-ind-004','Saturday','lunch')">📋 Details</button>
+    </div>
+  </div>
+      </div>
+      <div class="meal-col">
+        <div class="meal-type-label dinner-label">🌙 Dinner</div>
+        
+  <div class="meal-card" id="card-Saturday-dinner" data-id="d-chi-001" data-day="Saturday" data-type="dinner">
+    <div class="mc-top">
+      <span class="mc-emoji">🍜</span>
+      <div class="mc-flags">
+        <span>🇨🇳</span>
+        <span class="mc-spice"><span class="spice-dot filled">🌶</span><span class="spice-dot ">🌶</span><span class="spice-dot ">🌶</span></span>
+      </div>
+    </div>
+    <div class="mc-name">Veg Lo Mein with Tofu</div>
+    <div class="mc-desc">Silky noodles tossed with tofu and fresh vegetables in umami sauce.</div>
+    <div class="mc-macros">
+      <span class="mc-stat">⚡ 580</span>
+      <span class="mc-stat protein">💪 25g</span>
+      <span class="mc-stat">⏱ 25m</span>
+    </div>
+    <div class="mc-ingredients">
+      <span class="ing">lo mein noodles</span><span class="ing">firm tofu</span><span class="ing">bok choy</span><span class="ing more">+4</span>
+    </div>
+    <div class="mc-tags"><span class="tag">high protein</span><span class="tag">gym day</span><span class="tag">noodles</span></div>
+    <div class="mc-actions">
+      <button class="btn-shuffle" onclick="shuffleMeal('Saturday','dinner','d-chi-001')">🔀 Shuffle</button>
+      <button class="btn-detail" onclick="showDetail('d-chi-001','Saturday','dinner')">📋 Details</button>
+    </div>
+  </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header">
+      <div class="day-name-row">
+        <span class="day-name">Sunday</span>
+        <span class="day-date">2026-05-03</span>
+      </div>
+      <div class="workout-badge" style="background:#6b728018;color:#6b7280;border-color:#6b728035">
+        😴 Rest Day
+      </div>
+      <div class="day-macros">
+        <div class="macro-bar-row">
+          <span>Calories</span>
+          <div class="bar"><div class="fill cal-fill" style="width:81%"></div></div>
+          <span class="macro-val">1410 / 1750</span>
+        </div>
+        <div class="macro-bar-row">
+          <span>Protein</span>
+          <div class="bar"><div class="fill pro-fill" style="width:45%"></div></div>
+          <span class="macro-val">44g / 98g</span>
+        </div>
+      </div>
+    </div>
+    <div class="meals-row">
+      <div class="meal-col">
+        <div class="meal-type-label breakfast-label">🌅 Breakfast</div>
+        
+  <div class="meal-card" id="card-Sunday-breakfast" data-id="b-ind-006" data-day="Sunday" data-type="breakfast">
+    <div class="mc-top">
+      <span class="mc-emoji">🫓</span>
+      <div class="mc-flags">
+        <span>🇮🇳</span>
+        <span class="mc-spice"><span class="spice-dot filled">🌶</span><span class="spice-dot ">🌶</span><span class="spice-dot ">🌶</span></span>
+      </div>
+    </div>
+    <div class="mc-name">Idli Sambar</div>
+    <div class="mc-desc">Soft steamed rice cakes with hearty lentil vegetable soup.</div>
+    <div class="mc-macros">
+      <span class="mc-stat">⚡ 280</span>
+      <span class="mc-stat protein">💪 10g</span>
+      <span class="mc-stat">⏱ 10m</span>
+    </div>
+    <div class="mc-ingredients">
+      <span class="ing">idli batter</span><span class="ing">toor dal</span><span class="ing">tamarind</span><span class="ing more">+3</span>
+    </div>
+    <div class="mc-tags"><span class="tag">light</span><span class="tag">carb boost</span><span class="tag">rest day</span></div>
+    <div class="mc-actions">
+      <button class="btn-shuffle" onclick="shuffleMeal('Sunday','breakfast','b-ind-006')">🔀 Shuffle</button>
+      <button class="btn-detail" onclick="showDetail('b-ind-006','Sunday','breakfast')">📋 Details</button>
+    </div>
+  </div>
+      </div>
+      <div class="meal-col">
+        <div class="meal-type-label lunch-label">☀️ Lunch</div>
+        
+  <div class="meal-card" id="card-Sunday-lunch" data-id="l-ind-007" data-day="Sunday" data-type="lunch">
+    <div class="mc-top">
+      <span class="mc-emoji">🍲</span>
+      <div class="mc-flags">
+        <span>🇮🇳</span>
+        <span class="mc-spice"><span class="spice-dot filled">🌶</span><span class="spice-dot ">🌶</span><span class="spice-dot ">🌶</span></span>
+      </div>
+    </div>
+    <div class="mc-name">Kadhi Pakora + Rice</div>
+    <div class="mc-desc">Tangy yogurt-besan curry with fried pakora fritters over rice.</div>
+    <div class="mc-macros">
+      <span class="mc-stat">⚡ 580</span>
+      <span class="mc-stat protein">💪 16g</span>
+      <span class="mc-stat">⏱ 40m</span>
+    </div>
+    <div class="mc-ingredients">
+      <span class="ing">yogurt</span><span class="ing">besan</span><span class="ing">pakora</span><span class="ing more">+3</span>
+    </div>
+    <div class="mc-tags"><span class="tag">comfort food</span><span class="tag">rest day</span></div>
+    <div class="mc-actions">
+      <button class="btn-shuffle" onclick="shuffleMeal('Sunday','lunch','l-ind-007')">🔀 Shuffle</button>
+      <button class="btn-detail" onclick="showDetail('l-ind-007','Sunday','lunch')">📋 Details</button>
+    </div>
+  </div>
+      </div>
+      <div class="meal-col">
+        <div class="meal-type-label dinner-label">🌙 Dinner</div>
+        
+  <div class="meal-card" id="card-Sunday-dinner" data-id="d-ind-004" data-day="Sunday" data-type="dinner">
+    <div class="mc-top">
+      <span class="mc-emoji">🥦</span>
+      <div class="mc-flags">
+        <span>🇮🇳</span>
+        <span class="mc-spice"><span class="spice-dot filled">🌶</span><span class="spice-dot filled">🌶</span><span class="spice-dot ">🌶</span></span>
+      </div>
+    </div>
+    <div class="mc-name">Aloo Gobi + Roti + Dal</div>
+    <div class="mc-desc">Dry spiced potato and cauliflower with simple lentil dal.</div>
+    <div class="mc-macros">
+      <span class="mc-stat">⚡ 550</span>
+      <span class="mc-stat protein">💪 18g</span>
+      <span class="mc-stat">⏱ 30m</span>
+    </div>
+    <div class="mc-ingredients">
+      <span class="ing">potato</span><span class="ing">cauliflower</span><span class="ing">turmeric</span><span class="ing more">+3</span>
+    </div>
+    <div class="mc-tags"><span class="tag">rest day</span><span class="tag">light</span><span class="tag">classic</span></div>
+    <div class="mc-actions">
+      <button class="btn-shuffle" onclick="shuffleMeal('Sunday','dinner','d-ind-004')">🔀 Shuffle</button>
+      <button class="btn-detail" onclick="showDetail('d-ind-004','Sunday','dinner')">📋 Details</button>
+    </div>
+  </div>
+      </div>
+    </div>
+  </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Shopping tab ── -->
+<div id="tab-shopping" class="tab-content">
+  <div class="content">
+    <div class="shopping-header">
+      <div class="shopping-title">🛒 Shopping List</div>
+      <button class="btn-copy" onclick="copyShoppingList()">📋 Copy All</button>
+    </div>
+    <div id="shopping-grid" class="shopping-grid"></div>
+  </div>
+</div>
+
+<!-- ── Settings tab ── -->
+<div id="tab-settings" class="tab-content">
+  <div class="content">
+    <div class="settings-grid">
+      <div class="settings-section">
+        <div class="settings-section-title">🗓️ Workout Schedule</div>
+        <div class="schedule-grid" id="schedule-grid"></div>
+      </div>
+      <div class="settings-section">
+        <div class="settings-section-title">📏 Body Metrics</div>
+        <div class="metrics-grid">
+          <div class="metric-field">
+            <label>Weight (kg)</label>
+            <input type="number" id="input-weight" min="40" max="200" step="1" placeholder="70">
+          </div>
+          <div class="metric-field">
+            <label>Height (cm)</label>
+            <input type="number" id="input-height" min="140" max="220" step="1" placeholder="168">
+          </div>
+        </div>
+        <div style="margin-top:16px">
+          <div class="settings-section-title" style="font-size:13px;margin-bottom:8px">📊 Calculated Targets</div>
+          <div class="targets-list" id="targets-list"></div>
+        </div>
+        <button class="btn-save-settings" onclick="saveSettings()">💾 Save &amp; Download settings.json</button>
+      </div>
+    </div>
+    <div class="settings-note">
+      💡 After saving, put <code>settings.json</code> in your <code>data/</code> folder and run <code>node preview.mjs</code> to regenerate the plan with your new settings.
+    </div>
+  </div>
+</div>
+
+<!-- ── Detail Modal ── -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<!-- ── Toast ── -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── Embedded data ────────────────────────────────────────────────────────
+  const RECIPE_BANK_DATA = [{"id":"b-ind-001","name":"Moong Dal Chilla","cuisine":"indian","mealType":["breakfast"],"prepTime":20,"macros":{"calories":320,"protein":18,"carbs":38,"fat":8},"spiceLevel":"medium","ingredients":["moong dal","onion","green chilli","ginger","cumin","coriander","oil"],"description":"Protein-packed savoury lentil crepes with herbs and spices.","tags":["high-protein","quick","gym-day"],"emoji":"🥞"},{"id":"b-ind-002","name":"Besan Cheela with Paneer","cuisine":"indian","mealType":["breakfast"],"prepTime":15,"macros":{"calories":360,"protein":22,"carbs":30,"fat":12},"spiceLevel":"medium","ingredients":["besan","paneer","onion","tomato","green chilli","turmeric","ajwain"],"description":"Crispy chickpea flour crepes stuffed with spiced paneer.","tags":["high-protein","gym-day","filling"],"emoji":"🥚"},{"id":"b-ind-003","name":"Paneer Bhurji Toast","cuisine":"indian","mealType":["breakfast"],"prepTime":15,"macros":{"calories":380,"protein":24,"carbs":28,"fat":16},"spiceLevel":"medium","ingredients":["paneer","onion","capsicum","tomato","cumin","garam masala","whole wheat toast"],"description":"Scrambled paneer with veggies on whole wheat toast.","tags":["high-protein","gym-day"],"emoji":"🍞"},{"id":"b-ind-004","name":"Sprout Chaat","cuisine":"indian","mealType":["breakfast"],"prepTime":10,"macros":{"calories":220,"protein":14,"carbs":32,"fat":4},"spiceLevel":"mild","ingredients":["mixed sprouts","tomato","onion","lemon","chaat masala","coriander","pomegranate"],"description":"Light and refreshing sprouted lentil salad with tangy dressing.","tags":["light","running-day","no-cook"],"emoji":"🌱"},{"id":"b-ind-005","name":"Poha with Peanuts","cuisine":"indian","mealType":["breakfast"],"prepTime":15,"macros":{"calories":310,"protein":10,"carbs":48,"fat":9},"spiceLevel":"mild","ingredients":["flattened rice","peanuts","mustard seeds","curry leaves","onion","turmeric","lemon"],"description":"Classic beaten rice with crunchy peanuts and mustard tempering.","tags":["carb-boost","running-day","quick"],"emoji":"🍚"},{"id":"b-ind-006","name":"Idli Sambar","cuisine":"indian","mealType":["breakfast"],"prepTime":10,"macros":{"calories":280,"protein":10,"carbs":50,"fat":4},"spiceLevel":"mild","ingredients":["idli batter","toor dal","tamarind","tomato","mixed vegetables","sambar powder"],"description":"Soft steamed rice cakes with hearty lentil vegetable soup.","tags":["light","carb-boost","rest-day"],"emoji":"🫓"},{"id":"b-any-001","name":"Greek Yogurt Protein Bowl","cuisine":"indian","mealType":["breakfast"],"prepTime":5,"macros":{"calories":280,"protein":20,"carbs":28,"fat":8},"spiceLevel":"mild","ingredients":["greek yogurt","banana","chia seeds","almonds","honey","berries"],"description":"Thick creamy yogurt with seeds, nuts and fresh fruit.","tags":["high-protein","no-cook","quick","rest-day"],"emoji":"🥣"},{"id":"b-any-002","name":"Overnight Oats with Chia","cuisine":"indian","mealType":["breakfast"],"prepTime":5,"macros":{"calories":340,"protein":14,"carbs":52,"fat":9},"spiceLevel":"mild","ingredients":["rolled oats","chia seeds","almond milk","banana","peanut butter","cinnamon"],"description":"No-cook creamy oats prep the night before with high fibre and protein.","tags":["prep-ahead","carb-boost","running-day"],"emoji":"🌙"},{"id":"b-chi-001","name":"Tofu Scramble","cuisine":"chinese","mealType":["breakfast"],"prepTime":12,"macros":{"calories":280,"protein":20,"carbs":12,"fat":14},"spiceLevel":"mild","ingredients":["firm tofu","turmeric","nutritional yeast","capsicum","soy sauce","spring onion"],"description":"Silky scrambled tofu seasoned to golden perfection.","tags":["high-protein","low-carb","gym-day"],"emoji":"🥢"},{"id":"b-ind-007","name":"Methi Thepla","cuisine":"indian","mealType":["breakfast"],"prepTime":20,"macros":{"calories":300,"protein":10,"carbs":42,"fat":10},"spiceLevel":"medium","ingredients":["whole wheat flour","fenugreek leaves","yogurt","turmeric","red chilli","ajwain","oil"],"description":"Gujarati flatbreads with fresh fenugreek leaves and spices.","tags":["carb-boost","running-day","travel-friendly"],"emoji":"🫓"},{"id":"l-ind-001","name":"Dal Makhani + Roti + Salad","cuisine":"indian","mealType":["lunch","dinner"],"prepTime":45,"macros":{"calories":650,"protein":28,"carbs":82,"fat":18},"spiceLevel":"medium","ingredients":["whole black lentils","rajma","butter","cream","tomato","ginger-garlic","whole wheat roti","onion salad"],"description":"Slow-cooked creamy black lentils with rich buttery gravy.","tags":["high-protein","gym-day","classic"],"emoji":"🍛"},{"id":"l-ind-002","name":"Rajma Chawal + Raita","cuisine":"indian","mealType":["lunch","dinner"],"prepTime":40,"macros":{"calories":700,"protein":25,"carbs":110,"fat":12},"spiceLevel":"medium","ingredients":["kidney beans","basmati rice","tomato","onion","ginger","garam masala","yogurt raita"],"description":"North Indian kidney bean curry over basmati with cooling raita.","tags":["high-carb","running-day","comfort-food"],"emoji":"🫘"},{"id":"l-ind-003","name":"Paneer Tikka Masala + Roti","cuisine":"indian","mealType":["lunch","dinner"],"prepTime":40,"macros":{"calories":750,"protein":35,"carbs":65,"fat":28},"spiceLevel":"medium","ingredients":["paneer","yogurt marinade","tomato gravy","cream","kasuri methi","whole wheat roti"],"description":"Chargrilled paneer in velvety spiced tomato-cream sauce.","tags":["high-protein","gym-day","restaurant-style"],"emoji":"🟠"},{"id":"l-ind-004","name":"Chana Masala + Jeera Rice","cuisine":"indian","mealType":["lunch","dinner"],"prepTime":35,"macros":{"calories":680,"protein":22,"carbs":105,"fat":14},"spiceLevel":"medium","ingredients":["chickpeas","onion","tomato","anardana","cumin rice","coriander","lemon"],"description":"Tangy spiced chickpea curry with fragrant cumin rice.","tags":["high-carb","running-day","vegan"],"emoji":"🟡"},{"id":"l-ind-005","name":"Tofu Bhurji + Roti + Dal","cuisine":"indian","mealType":["lunch"],"prepTime":25,"macros":{"calories":620,"protein":30,"carbs":60,"fat":20},"spiceLevel":"medium","ingredients":["firm tofu","onion","tomato","peas","garam masala","roti","moong dal"],"description":"Indian-spiced tofu scramble with simple moong dal and roti.","tags":["high-protein","gym-day","quick"],"emoji":"🥬"},{"id":"l-ind-006","name":"Methi Paneer + Roti + Dal","cuisine":"indian","mealType":["lunch","dinner"],"prepTime":30,"macros":{"calories":700,"protein":32,"carbs":68,"fat":26},"spiceLevel":"medium","ingredients":["paneer","fresh fenugreek","onion","tomato","cream","roti","toor dal"],"description":"Paneer with slightly bitter fenugreek in rich gravy.","tags":["high-protein","gym-day"],"emoji":"🌿"},{"id":"l-ind-007","name":"Kadhi Pakora + Rice","cuisine":"indian","mealType":["lunch","dinner"],"prepTime":40,"macros":{"calories":580,"protein":16,"carbs":88,"fat":18},"spiceLevel":"mild","ingredients":["yogurt","besan","pakora","mustard seeds","curry leaves","basmati rice"],"description":"Tangy yogurt-besan curry with fried pakora fritters over rice.","tags":["comfort-food","rest-day"],"emoji":"🍲"},{"id":"l-chi-001","name":"Tofu Fried Rice + Veg Soup","cuisine":"chinese","mealType":["lunch","dinner"],"prepTime":25,"macros":{"calories":620,"protein":22,"carbs":90,"fat":14},"spiceLevel":"mild","ingredients":["tofu","cooked rice","soy sauce","sesame oil","spring onion","carrot","peas","veg broth"],"description":"Wok-tossed tofu and vegetable fried rice with clear soup.","tags":["high-carb","running-day","quick"],"emoji":"🍳"},{"id":"l-chi-002","name":"Mapo Tofu (Veg) + Steamed Rice","cuisine":"chinese","mealType":["lunch","dinner"],"prepTime":20,"macros":{"calories":580,"protein":25,"carbs":70,"fat":16},"spiceLevel":"medium","ingredients":["silken tofu","doubanjiang","garlic","ginger","mushroom","sichuan pepper","rice"],"description":"Silky tofu in spicy aromatic sauce with numbing Sichuan pepper.","tags":["high-protein","gym-day","bold-flavour"],"emoji":"🌶️"},{"id":"l-chi-003","name":"Hakka Noodles + Tofu Manchurian","cuisine":"chinese","mealType":["lunch"],"prepTime":30,"macros":{"calories":700,"protein":28,"carbs":95,"fat":18},"spiceLevel":"medium","ingredients":["noodles","tofu","capsicum","spring onion","soy sauce","chilli sauce","cornflour"],"description":"Indo-Chinese classic: stir-fried noodles with crispy tofu balls.","tags":["high-carb","running-day","crowd-favourite"],"emoji":"🍜"},{"id":"l-chi-004","name":"Veg Dimsum + Miso Broth","cuisine":"chinese","mealType":["lunch"],"prepTime":35,"macros":{"calories":550,"protein":20,"carbs":72,"fat":12},"spiceLevel":"mild","ingredients":["dumpling wrappers","tofu","cabbage","mushroom","ginger","sesame","miso","seaweed"],"description":"Steamed dumplings filled with tofu and vegetables in umami broth.","tags":["light","rest-day","elegant"],"emoji":"🥟"},{"id":"l-ita-001","name":"Rigatoni Lentil Bolognese","cuisine":"italian","mealType":["lunch","dinner"],"prepTime":40,"macros":{"calories":700,"protein":28,"carbs":100,"fat":14},"spiceLevel":"mild","ingredients":["rigatoni","green lentils","tomatoes","carrot","celery","red wine","parmesan","basil"],"description":"Hearty lentil bolognese on thick rigatoni with parmesan.","tags":["high-protein","gym-day","comfort-food"],"emoji":"🍝"},{"id":"l-ita-002","name":"Pasta Primavera with Ricotta","cuisine":"italian","mealType":["lunch","dinner"],"prepTime":25,"macros":{"calories":650,"protein":22,"carbs":88,"fat":20},"spiceLevel":"mild","ingredients":["penne","ricotta","zucchini","cherry tomatoes","asparagus","basil","lemon","parmesan"],"description":"Spring pasta tossed with creamy ricotta and fresh vegetables.","tags":["light","rest-day","fresh"],"emoji":"🌸"},{"id":"l-ita-003","name":"Penne Arrabbiata + Insalata","cuisine":"italian","mealType":["lunch","dinner"],"prepTime":20,"macros":{"calories":600,"protein":18,"carbs":95,"fat":12},"spiceLevel":"medium","ingredients":["penne","san marzano tomatoes","garlic","red chilli","parsley","parmesan","green salad"],"description":"Fiery garlicky tomato sauce with al dente penne.","tags":["high-carb","running-day","quick"],"emoji":"🔴"},{"id":"l-ita-004","name":"Pasta e Fagioli","cuisine":"italian","mealType":["lunch","dinner"],"prepTime":35,"macros":{"calories":620,"protein":25,"carbs":90,"fat":12},"spiceLevel":"mild","ingredients":["ditalini pasta","cannellini beans","tomatoes","rosemary","garlic","parmesan","olive oil"],"description":"Tuscan pasta and bean soup — rustic, hearty, and nourishing.","tags":["high-protein","gym-day","comforting"],"emoji":"🫘"},{"id":"d-ind-001","name":"Palak Paneer + Roti","cuisine":"indian","mealType":["dinner","lunch"],"prepTime":35,"macros":{"calories":620,"protein":30,"carbs":55,"fat":26},"spiceLevel":"medium","ingredients":["paneer","spinach","onion","ginger-garlic","cream","whole spices","roti"],"description":"Iron-rich spinach gravy with soft paneer cubes and warm roti.","tags":["high-protein","gym-day","classic"],"emoji":"🟢"},{"id":"d-ind-002","name":"Dal Tadka + Jeera Rice","cuisine":"indian","mealType":["dinner","lunch"],"prepTime":30,"macros":{"calories":580,"protein":22,"carbs":90,"fat":12},"spiceLevel":"medium","ingredients":["toor dal","ghee","jeera","garlic","red chilli","basmati rice","coriander"],"description":"Tempered yellow lentils with a sizzling ghee and cumin tadka.","tags":["classic","rest-day","comforting"],"emoji":"🟡"},{"id":"d-ind-003","name":"Paneer Butter Masala + Naan","cuisine":"indian","mealType":["dinner"],"prepTime":40,"macros":{"calories":720,"protein":32,"carbs":72,"fat":32},"spiceLevel":"mild","ingredients":["paneer","butter","cashew","tomato","cream","kasuri methi","naan"],"description":"Velvety tomato-cashew gravy with pillowy naan. Ultimate comfort.","tags":["high-protein","indulgent","rest-day"],"emoji":"🧡"},{"id":"d-ind-004","name":"Aloo Gobi + Roti + Dal","cuisine":"indian","mealType":["dinner"],"prepTime":30,"macros":{"calories":550,"protein":18,"carbs":80,"fat":14},"spiceLevel":"medium","ingredients":["potato","cauliflower","turmeric","coriander powder","roti","moong dal"],"description":"Dry spiced potato and cauliflower with simple lentil dal.","tags":["rest-day","light","classic"],"emoji":"🥦"},{"id":"d-ind-005","name":"Paneer Bhurji + Paratha","cuisine":"indian","mealType":["dinner","breakfast"],"prepTime":25,"macros":{"calories":660,"protein":30,"carbs":65,"fat":26},"spiceLevel":"medium","ingredients":["paneer","onion","tomato","capsicum","garam masala","whole wheat paratha"],"description":"Spiced scrambled paneer with flaky whole wheat paratha.","tags":["high-protein","gym-day","quick"],"emoji":"🥘"},{"id":"d-ind-006","name":"Mixed Dal Khichdi + Papad","cuisine":"indian","mealType":["dinner"],"prepTime":30,"macros":{"calories":560,"protein":22,"carbs":88,"fat":10},"spiceLevel":"mild","ingredients":["moong dal","masoor dal","rice","ghee","cumin","turmeric","papad"],"description":"One-pot comfort rice and lentil dish — light, warm, and nourishing.","tags":["rest-day","recovery","easy-digest"],"emoji":"🍵"},{"id":"d-ind-007","name":"Baingan Bharta + Roti","cuisine":"indian","mealType":["dinner"],"prepTime":40,"macros":{"calories":500,"protein":14,"carbs":62,"fat":18},"spiceLevel":"medium","ingredients":["eggplant","onion","tomato","green chilli","ghee","roti","coriander"],"description":"Smoky flame-roasted eggplant mash with rustic Indian spicing.","tags":["light","running-day","smoky"],"emoji":"🍆"},{"id":"d-chi-001","name":"Veg Lo Mein with Tofu","cuisine":"chinese","mealType":["dinner","lunch"],"prepTime":25,"macros":{"calories":580,"protein":25,"carbs":80,"fat":14},"spiceLevel":"mild","ingredients":["lo mein noodles","firm tofu","bok choy","mushrooms","soy sauce","sesame oil","garlic"],"description":"Silky noodles tossed with tofu and fresh vegetables in umami sauce.","tags":["high-protein","gym-day","noodles"],"emoji":"🍜"},{"id":"d-chi-002","name":"Tofu Stir-Fry + Steamed Rice","cuisine":"chinese","mealType":["dinner"],"prepTime":20,"macros":{"calories":520,"protein":28,"carbs":58,"fat":16},"spiceLevel":"medium","ingredients":["firm tofu","broccoli","snap peas","oyster mushrooms","ginger","soy sauce","rice"],"description":"Crispy tofu and crunchy vegetables in ginger-soy sauce.","tags":["high-protein","gym-day","low-cal"],"emoji":"🥦"},{"id":"d-chi-003","name":"Kung Pao Tofu + Rice","cuisine":"chinese","mealType":["dinner","lunch"],"prepTime":25,"macros":{"calories":560,"protein":26,"carbs":65,"fat":18},"spiceLevel":"medium","ingredients":["tofu","peanuts","dried chillies","sichuan pepper","bell pepper","rice vinegar","rice"],"description":"Bold, nutty, spicy Kung Pao with tofu and crunchy peanuts.","tags":["high-protein","gym-day","bold-flavour"],"emoji":"🥜"},{"id":"d-ita-001","name":"Eggplant Parmigiana","cuisine":"italian","mealType":["dinner"],"prepTime":55,"macros":{"calories":580,"protein":20,"carbs":52,"fat":28},"spiceLevel":"mild","ingredients":["eggplant","mozzarella","parmesan","tomato sauce","basil","breadcrumbs","olive oil"],"description":"Layered baked eggplant with melted cheese and tomato sauce.","tags":["indulgent","rest-day","baked"],"emoji":"🧀"},{"id":"d-ita-002","name":"Mushroom Pea Risotto","cuisine":"italian","mealType":["dinner"],"prepTime":40,"macros":{"calories":620,"protein":18,"carbs":90,"fat":16},"spiceLevel":"mild","ingredients":["arborio rice","porcini mushrooms","peas","white wine","parmesan","butter","thyme"],"description":"Silky creamy risotto with earthy mushrooms and sweet peas.","tags":["high-carb","running-day","elegant"],"emoji":"🍄"},{"id":"d-ita-003","name":"Pasta Pomodoro + Ricotta","cuisine":"italian","mealType":["dinner"],"prepTime":20,"macros":{"calories":580,"protein":20,"carbs":82,"fat":16},"spiceLevel":"mild","ingredients":["spaghetti","san marzano tomatoes","ricotta","basil","garlic","parmesan","olive oil"],"description":"Simple but perfect tomato pasta with creamy dollops of ricotta.","tags":["quick","rest-day","light"],"emoji":"🍅"}];
+  const planData = {"weekId":"2026-W18","startDate":"2026-04-27","createdAt":"2026-04-29T15:53:45.156Z","updatedAt":"2026-04-29T15:53:45.156Z","userProfile":{"diet":"vegetarian","cuisinePreferences":["indian","chinese","italian"],"spiceLevel":"medium","fitnessGoal":"protein-rich, muscle maintenance","age":30,"weight":70,"height":168,"workoutSchedule":{"Monday":"gym","Tuesday":"running","Wednesday":"gym","Thursday":"rest","Friday":"gym","Saturday":"running","Sunday":"rest"},"dailyCalorieTargets":{"gym":2240,"running":2030,"rest":1750},"dailyProteinTargets":{"gym":140,"running":119,"rest":98}},"days":{"Monday":{"date":"2026-04-27","dayOfWeek":"Monday","workoutType":"gym","calorieTarget":2240,"proteinTarget":140,"breakfast":{"id":"b-chi-001","name":"Tofu Scramble","cuisine":"chinese","mealType":["breakfast"],"prepTime":12,"macros":{"calories":280,"protein":20,"carbs":12,"fat":14},"spiceLevel":"mild","ingredients":["firm tofu","turmeric","nutritional yeast","capsicum","soy sauce","spring onion"],"description":"Silky scrambled tofu seasoned to golden perfection.","tags":["high-protein","low-carb","gym-day"],"emoji":"🥢"},"lunch":{"id":"l-ita-001","name":"Rigatoni Lentil Bolognese","cuisine":"italian","mealType":["lunch","dinner"],"prepTime":40,"macros":{"calories":700,"protein":28,"carbs":100,"fat":14},"spiceLevel":"mild","ingredients":["rigatoni","green lentils","tomatoes","carrot","celery","red wine","parmesan","basil"],"description":"Hearty lentil bolognese on thick rigatoni with parmesan.","tags":["high-protein","gym-day","comfort-food"],"emoji":"🍝"},"dinner":{"id":"l-ind-001","name":"Dal Makhani + Roti + Salad","cuisine":"indian","mealType":["lunch","dinner"],"prepTime":45,"macros":{"calories":650,"protein":28,"carbs":82,"fat":18},"spiceLevel":"medium","ingredients":["whole black lentils","rajma","butter","cream","tomato","ginger-garlic","whole wheat roti","onion salad"],"description":"Slow-cooked creamy black lentils with rich buttery gravy.","tags":["high-protein","gym-day","classic"],"emoji":"🍛"},"totalCalories":1630,"totalProtein":76,"totalCarbs":194,"totalFat":46},"Tuesday":{"date":"2026-04-28","dayOfWeek":"Tuesday","workoutType":"running","calorieTarget":2030,"proteinTarget":119,"breakfast":{"id":"b-ind-005","name":"Poha with Peanuts","cuisine":"indian","mealType":["breakfast"],"prepTime":15,"macros":{"calories":310,"protein":10,"carbs":48,"fat":9},"spiceLevel":"mild","ingredients":["flattened rice","peanuts","mustard seeds","curry leaves","onion","turmeric","lemon"],"description":"Classic beaten rice with crunchy peanuts and mustard tempering.","tags":["carb-boost","running-day","quick"],"emoji":"🍚"},"lunch":{"id":"l-ind-002","name":"Rajma Chawal + Raita","cuisine":"indian","mealType":["lunch","dinner"],"prepTime":40,"macros":{"calories":700,"protein":25,"carbs":110,"fat":12},"spiceLevel":"medium","ingredients":["kidney beans","basmati rice","tomato","onion","ginger","garam masala","yogurt raita"],"description":"North Indian kidney bean curry over basmati with cooling raita.","tags":["high-carb","running-day","comfort-food"],"emoji":"🫘"},"dinner":{"id":"l-chi-001","name":"Tofu Fried Rice + Veg Soup","cuisine":"chinese","mealType":["lunch","dinner"],"prepTime":25,"macros":{"calories":620,"protein":22,"carbs":90,"fat":14},"spiceLevel":"mild","ingredients":["tofu","cooked rice","soy sauce","sesame oil","spring onion","carrot","peas","veg broth"],"description":"Wok-tossed tofu and vegetable fried rice with clear soup.","tags":["high-carb","running-day","quick"],"emoji":"🍳"},"totalCalories":1630,"totalProtein":57,"totalCarbs":248,"totalFat":35},"Wednesday":{"date":"2026-04-29","dayOfWeek":"Wednesday","workoutType":"gym","calorieTarget":2240,"proteinTarget":140,"breakfast":{"id":"b-ind-001","name":"Moong Dal Chilla","cuisine":"indian","mealType":["breakfast"],"prepTime":20,"macros":{"calories":320,"protein":18,"carbs":38,"fat":8},"spiceLevel":"medium","ingredients":["moong dal","onion","green chilli","ginger","cumin","coriander","oil"],"description":"Protein-packed savoury lentil crepes with herbs and spices.","tags":["high-protein","quick","gym-day"],"emoji":"🥞"},"lunch":{"id":"l-ita-004","name":"Pasta e Fagioli","cuisine":"italian","mealType":["lunch","dinner"],"prepTime":35,"macros":{"calories":620,"protein":25,"carbs":90,"fat":12},"spiceLevel":"mild","ingredients":["ditalini pasta","cannellini beans","tomatoes","rosemary","garlic","parmesan","olive oil"],"description":"Tuscan pasta and bean soup — rustic, hearty, and nourishing.","tags":["high-protein","gym-day","comforting"],"emoji":"🫘"},"dinner":{"id":"l-ind-003","name":"Paneer Tikka Masala + Roti","cuisine":"indian","mealType":["lunch","dinner"],"prepTime":40,"macros":{"calories":750,"protein":35,"carbs":65,"fat":28},"spiceLevel":"medium","ingredients":["paneer","yogurt marinade","tomato gravy","cream","kasuri methi","whole wheat roti"],"description":"Chargrilled paneer in velvety spiced tomato-cream sauce.","tags":["high-protein","gym-day","restaurant-style"],"emoji":"🟠"},"totalCalories":1690,"totalProtein":78,"totalCarbs":193,"totalFat":48},"Thursday":{"date":"2026-04-30","dayOfWeek":"Thursday","workoutType":"rest","calorieTarget":1750,"proteinTarget":98,"breakfast":{"id":"b-ind-002","name":"Besan Cheela with Paneer","cuisine":"indian","mealType":["breakfast"],"prepTime":15,"macros":{"calories":360,"protein":22,"carbs":30,"fat":12},"spiceLevel":"medium","ingredients":["besan","paneer","onion","tomato","green chilli","turmeric","ajwain"],"description":"Crispy chickpea flour crepes stuffed with spiced paneer.","tags":["high-protein","gym-day","filling"],"emoji":"🥚"},"lunch":{"id":"l-chi-004","name":"Veg Dimsum + Miso Broth","cuisine":"chinese","mealType":["lunch"],"prepTime":35,"macros":{"calories":550,"protein":20,"carbs":72,"fat":12},"spiceLevel":"mild","ingredients":["dumpling wrappers","tofu","cabbage","mushroom","ginger","sesame","miso","seaweed"],"description":"Steamed dumplings filled with tofu and vegetables in umami broth.","tags":["light","rest-day","elegant"],"emoji":"🥟"},"dinner":{"id":"l-chi-002","name":"Mapo Tofu (Veg) + Steamed Rice","cuisine":"chinese","mealType":["lunch","dinner"],"prepTime":20,"macros":{"calories":580,"protein":25,"carbs":70,"fat":16},"spiceLevel":"medium","ingredients":["silken tofu","doubanjiang","garlic","ginger","mushroom","sichuan pepper","rice"],"description":"Silky tofu in spicy aromatic sauce with numbing Sichuan pepper.","tags":["high-protein","gym-day","bold-flavour"],"emoji":"🌶️"},"totalCalories":1490,"totalProtein":67,"totalCarbs":172,"totalFat":40},"Friday":{"date":"2026-05-01","dayOfWeek":"Friday","workoutType":"gym","calorieTarget":2240,"proteinTarget":140,"breakfast":{"id":"b-ind-003","name":"Paneer Bhurji Toast","cuisine":"indian","mealType":["breakfast"],"prepTime":15,"macros":{"calories":380,"protein":24,"carbs":28,"fat":16},"spiceLevel":"medium","ingredients":["paneer","onion","capsicum","tomato","cumin","garam masala","whole wheat toast"],"description":"Scrambled paneer with veggies on whole wheat toast.","tags":["high-protein","gym-day"],"emoji":"🍞"},"lunch":{"id":"l-ind-005","name":"Tofu Bhurji + Roti + Dal","cuisine":"indian","mealType":["lunch"],"prepTime":25,"macros":{"calories":620,"protein":30,"carbs":60,"fat":20},"spiceLevel":"medium","ingredients":["firm tofu","onion","tomato","peas","garam masala","roti","moong dal"],"description":"Indian-spiced tofu scramble with simple moong dal and roti.","tags":["high-protein","gym-day","quick"],"emoji":"🥬"},"dinner":{"id":"l-ind-006","name":"Methi Paneer + Roti + Dal","cuisine":"indian","mealType":["lunch","dinner"],"prepTime":30,"macros":{"calories":700,"protein":32,"carbs":68,"fat":26},"spiceLevel":"medium","ingredients":["paneer","fresh fenugreek","onion","tomato","cream","roti","toor dal"],"description":"Paneer with slightly bitter fenugreek in rich gravy.","tags":["high-protein","gym-day"],"emoji":"🌿"},"totalCalories":1700,"totalProtein":86,"totalCarbs":156,"totalFat":62},"Saturday":{"date":"2026-05-02","dayOfWeek":"Saturday","workoutType":"running","calorieTarget":2030,"proteinTarget":119,"breakfast":{"id":"b-ind-004","name":"Sprout Chaat","cuisine":"indian","mealType":["breakfast"],"prepTime":10,"macros":{"calories":220,"protein":14,"carbs":32,"fat":4},"spiceLevel":"mild","ingredients":["mixed sprouts","tomato","onion","lemon","chaat masala","coriander","pomegranate"],"description":"Light and refreshing sprouted lentil salad with tangy dressing.","tags":["light","running-day","no-cook"],"emoji":"🌱"},"lunch":{"id":"l-ind-004","name":"Chana Masala + Jeera Rice","cuisine":"indian","mealType":["lunch","dinner"],"prepTime":35,"macros":{"calories":680,"protein":22,"carbs":105,"fat":14},"spiceLevel":"medium","ingredients":["chickpeas","onion","tomato","anardana","cumin rice","coriander","lemon"],"description":"Tangy spiced chickpea curry with fragrant cumin rice.","tags":["high-carb","running-day","vegan"],"emoji":"🟡"},"dinner":{"id":"d-chi-001","name":"Veg Lo Mein with Tofu","cuisine":"chinese","mealType":["dinner","lunch"],"prepTime":25,"macros":{"calories":580,"protein":25,"carbs":80,"fat":14},"spiceLevel":"mild","ingredients":["lo mein noodles","firm tofu","bok choy","mushrooms","soy sauce","sesame oil","garlic"],"description":"Silky noodles tossed with tofu and fresh vegetables in umami sauce.","tags":["high-protein","gym-day","noodles"],"emoji":"🍜"},"totalCalories":1480,"totalProtein":61,"totalCarbs":217,"totalFat":32},"Sunday":{"date":"2026-05-03","dayOfWeek":"Sunday","workoutType":"rest","calorieTarget":1750,"proteinTarget":98,"breakfast":{"id":"b-ind-006","name":"Idli Sambar","cuisine":"indian","mealType":["breakfast"],"prepTime":10,"macros":{"calories":280,"protein":10,"carbs":50,"fat":4},"spiceLevel":"mild","ingredients":["idli batter","toor dal","tamarind","tomato","mixed vegetables","sambar powder"],"description":"Soft steamed rice cakes with hearty lentil vegetable soup.","tags":["light","carb-boost","rest-day"],"emoji":"🫓"},"lunch":{"id":"l-ind-007","name":"Kadhi Pakora + Rice","cuisine":"indian","mealType":["lunch","dinner"],"prepTime":40,"macros":{"calories":580,"protein":16,"carbs":88,"fat":18},"spiceLevel":"mild","ingredients":["yogurt","besan","pakora","mustard seeds","curry leaves","basmati rice"],"description":"Tangy yogurt-besan curry with fried pakora fritters over rice.","tags":["comfort-food","rest-day"],"emoji":"🍲"},"dinner":{"id":"d-ind-004","name":"Aloo Gobi + Roti + Dal","cuisine":"indian","mealType":["dinner"],"prepTime":30,"macros":{"calories":550,"protein":18,"carbs":80,"fat":14},"spiceLevel":"medium","ingredients":["potato","cauliflower","turmeric","coriander powder","roti","moong dal"],"description":"Dry spiced potato and cauliflower with simple lentil dal.","tags":["rest-day","light","classic"],"emoji":"🥦"},"totalCalories":1410,"totalProtein":44,"totalCarbs":218,"totalFat":36}}};
+
+  const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+
+  // ── Tab switching ────────────────────────────────────────────────────────
+  function switchTab(name) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    event.currentTarget.classList.add('active');
+    if (name === 'shopping') renderShoppingList();
+    if (name === 'settings') initSettingsUI();
+  }
+
+  // ── Client-side shuffle ──────────────────────────────────────────────────
+  function shuffleMeal(day, mealType, currentId) {
+    if (!RECIPE_BANK_DATA.length) {
+      showToast('Shuffle requires the recipe bank — open via node preview.mjs', true);
+      return;
+    }
+    const pool = RECIPE_BANK_DATA.filter(r => r.mealType.includes(mealType) && r.id !== currentId);
+    if (!pool.length) { showToast('No alternatives found', true); return; }
+    const recipe = pool[Math.floor(Math.random() * pool.length)];
+    planData.days[day][mealType] = recipe;
+    const cardEl = document.getElementById('card-' + day + '-' + mealType);
+    if (cardEl) cardEl.outerHTML = buildMealCardHtml(recipe, day, mealType);
+    showToast('🔀 ' + day + ' ' + mealType + ' → ' + recipe.name);
+  }
+
+  function buildMealCardHtml(meal, day, mealType) {
+    const flags = { indian:'🇮🇳', chinese:'🇨🇳', italian:'🇮🇹' };
+    const extra = meal.ingredients.length - 3;
+    const spice = meal.spiceLevel === 'hot' ? '🌶🌶🌶' : meal.spiceLevel === 'medium' ? '🌶🌶' : '🌶';
+    const tags = meal.tags.slice(0,3).map(t => '<span class="tag">' + t.replace(/-/g,' ') + '</span>').join('');
+    const ings = meal.ingredients.slice(0,3).map(i => '<span class="ing">' + i + '</span>').join('');
+    const moreIng = extra > 0 ? '<span class="ing more">+' + extra + '</span>' : '';
+    return `<div class="meal-card" id="card-${day}-${mealType}" data-id="${meal.id}" data-day="${day}" data-type="${mealType}">
+      <div class="mc-top">
+        <span class="mc-emoji">${meal.emoji}</span>
+        <div class="mc-flags"><span>${flags[meal.cuisine]||'🍽️'}</span><span class="mc-spice" style="font-size:9px;letter-spacing:-2px">${spice}</span></div>
+      </div>
+      <div class="mc-name">${meal.name}</div>
+      <div class="mc-desc">${meal.description}</div>
+      <div class="mc-macros">
+        <span class="mc-stat">⚡ ${meal.macros.calories}</span>
+        <span class="mc-stat protein">💪 ${meal.macros.protein}g</span>
+        <span class="mc-stat">⏱ ${meal.prepTime}m</span>
+      </div>
+      <div class="mc-ingredients">${ings}${moreIng}</div>
+      <div class="mc-tags">${tags}</div>
+      <div class="mc-actions">
+        <button class="btn-shuffle" onclick="shuffleMeal('${day}','${mealType}','${meal.id}')">🔀 Shuffle</button>
+        <button class="btn-detail" onclick="showDetail('${meal.id}','${day}','${mealType}')">📋 Details</button>
+      </div>
+    </div>`;
+  }
+
+  // ── Detail modal ─────────────────────────────────────────────────────────
+  function showDetail(recipeId, day, mealType) {
+    let recipe = null;
+    for (const d of Object.values(planData.days)) {
+      for (const t of ['breakfast','lunch','dinner']) {
+        if (d[t] && d[t].id === recipeId) { recipe = d[t]; break; }
+      }
+      if (recipe) break;
+    }
+    if (!recipe) return;
+    const modal = document.getElementById('modal-content');
+    modal.innerHTML = `
+      <div class="modal-title">${recipe.emoji} ${recipe.name}</div>
+      <div class="modal-section">
+        <div class="modal-label">Description</div>
+        <div class="modal-value">${recipe.description}</div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-label">Nutrition</div>
+        <div class="macros-grid">
+          <div class="macro-box"><div class="val" style="color:var(--primary)">${recipe.macros.calories}</div><div class="unit">kcal</div></div>
+          <div class="macro-box"><div class="val" style="color:var(--protein)">${recipe.macros.protein}g</div><div class="unit">Protein</div></div>
+          <div class="macro-box"><div class="val" style="color:var(--carb)">${recipe.macros.carbs}g</div><div class="unit">Carbs</div></div>
+          <div class="macro-box"><div class="val" style="color:#f59e0b">${recipe.macros.fat}g</div><div class="unit">Fat</div></div>
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-label">All Ingredients</div>
+        <div class="modal-value">${recipe.ingredients.join(', ')}</div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-label">Tags</div>
+        <div class="tag-list">${recipe.tags.map(t => '<span class="modal-tag">' + t + '</span>').join('')}</div>
+      </div>
+      <div class="modal-section" style="display:flex;gap:12px">
+        <div style="flex:1"><div class="modal-label">Cuisine</div><div class="modal-value">${recipe.cuisine}</div></div>
+        <div style="flex:1"><div class="modal-label">Prep Time</div><div class="modal-value">${recipe.prepTime} min</div></div>
+        <div style="flex:1"><div class="modal-label">Spice</div><div class="modal-value">${recipe.spiceLevel}</div></div>
+      </div>
+      <button class="btn-close" onclick="closeModal()">✕ Close</button>
+    `;
+    document.getElementById('modal').classList.add('open');
+  }
+  function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+  // ── Shopping list ────────────────────────────────────────────────────────
+  const CATEGORIES = {
+    'Dairy & Paneer':     /paneer|yogurt|curd|cream|butter|mozzarella|ricotta|parmesan|milk|ghee|cheese/,
+    'Grains & Bread':     /\brice\b|roti|naan|bread|pasta|noodles|oats|flour|paratha|thepla|toast|spaghetti|penne|rigatoni|ditalini|arborio/,
+    'Legumes & Tofu':     /\bdal\b|lentil|bean|chickpea|tofu|sprout|rajma|chana|moong|toor|masoor|cannellini/,
+    'Produce':            /onion|tomato|spinach|potato|capsicum|cauliflower|eggplant|zucchini|carrot|broccoli|\bpea\b|mushroom|ginger|garlic|chilli|coriander|fenugreek|bok choy|cabbage|spring onion|celery|asparagus|cherry|methi|basil|thyme|parsley|rosemary|curry leaves/,
+    'Nuts & Seeds':       /almond|peanut|cashew|chia|sesame|walnut|\bseed\b|\bnut\b/,
+    'Fruits':             /banana|berry|lemon|pomegranate|\bfruit\b/,
+    'Condiments & Sauces':/soy sauce|sesame oil|rice vinegar|tamarind|miso|chilli sauce|red wine|white wine|olive oil|doubanjiang|\boil\b/,
+  };
+  function categorizeIngredient(ing) {
+    const lower = ing.toLowerCase();
+    for (const [cat, re] of Object.entries(CATEGORIES)) {
+      if (re.test(lower)) return cat;
+    }
+    return 'Pantry & Spices';
+  }
+  function buildShoppingList() {
+    const counts = {};
+    for (const day of Object.values(planData.days)) {
+      for (const t of ['breakfast','lunch','dinner']) {
+        const meal = day[t]; if (!meal) continue;
+        for (const ing of meal.ingredients) {
+          const key = ing.toLowerCase().trim();
+          counts[key] = (counts[key] || 0) + 1;
+        }
+      }
+    }
+    const cats = {};
+    for (const [ing, count] of Object.entries(counts)) {
+      const cat = categorizeIngredient(ing);
+      if (!cats[cat]) cats[cat] = [];
+      cats[cat].push({ name: ing, count });
+    }
+    return cats;
+  }
+  function renderShoppingList() {
+    const cats = buildShoppingList();
+    const grid = document.getElementById('shopping-grid');
+    grid.innerHTML = Object.entries(cats).map(([cat, items]) => `
+      <div class="shop-category">
+        <div class="shop-cat-title">${cat}</div>
+        ${items.sort((a,b)=>a.name.localeCompare(b.name)).map(item => `
+          <div class="shop-item">
+            <input type="checkbox" id="si-${item.name.replace(/\s+/g,'-')}">
+            <label for="si-${item.name.replace(/\s+/g,'-')}">${item.name}</label>
+            ${item.count > 1 ? '<span class="shop-count">×' + item.count + '</span>' : ''}
+          </div>`).join('')}
+      </div>
+    `).join('');
+  }
+  function copyShoppingList() {
+    const cats = buildShoppingList();
+    let text = '🛒 Shopping List\n\n';
+    for (const [cat, items] of Object.entries(cats)) {
+      text += cat + ':\n';
+      items.sort((a,b)=>a.name.localeCompare(b.name)).forEach(i => { text += '  • ' + i.name + (i.count > 1 ? ' (×' + i.count + ')' : '') + '\n'; });
+      text += '\n';
+    }
+    navigator.clipboard.writeText(text).then(() => showToast('📋 Copied to clipboard!'));
+  }
+
+  // ── Settings ─────────────────────────────────────────────────────────────
+  let currentSettings = {};
+  function initSettingsUI() {
+    const saved = JSON.parse(localStorage.getItem('mealplanner-settings') || 'null') || {
+      workoutSchedule: planData.userProfile.workoutSchedule || {},
+      weight: planData.userProfile.weight || 70,
+      height: planData.userProfile.height || 168,
+    };
+    currentSettings = JSON.parse(JSON.stringify(saved));
+    document.getElementById('input-weight').value = saved.weight || 70;
+    document.getElementById('input-height').value = saved.height || 168;
+    document.getElementById('input-weight').oninput = () => updateTargets();
+    document.getElementById('input-height').oninput = () => updateTargets();
+    renderScheduleGrid(saved.workoutSchedule);
+    updateTargets();
+  }
+  function renderScheduleGrid(schedule) {
+    const grid = document.getElementById('schedule-grid');
+    grid.innerHTML = DAYS.map(day => `
+      <div class="schedule-row">
+        <span class="schedule-day">${day}</span>
+        <div class="type-btns">
+          ${['gym','running','rest'].map(type => `
+            <button class="type-btn ${schedule[day]===type ? 'active-' + type : ''}"
+              onclick="setWorkoutDay('${day}','${type}',this)">${type==='running'?'🏃':type==='gym'?'🏋️':'😴'} ${type}</button>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+  }
+  function setWorkoutDay(day, type, btn) {
+    currentSettings.workoutSchedule[day] = type;
+    btn.closest('.type-btns').querySelectorAll('.type-btn').forEach(b => {
+      b.className = 'type-btn';
+    });
+    btn.className = 'type-btn active-' + type;
+    updateTargets();
+  }
+  function updateTargets() {
+    const w = parseFloat(document.getElementById('input-weight').value) || 70;
+    const list = document.getElementById('targets-list');
+    const wdays = Object.values(currentSettings.workoutSchedule || {});
+    const gymCount = wdays.filter(d=>d==='gym').length;
+    const runCount = wdays.filter(d=>d==='running').length;
+    list.innerHTML = `
+      <div class="target-row"><span>🏋️ Gym days (${gymCount}×/wk)</span><span>${Math.round(w*32)} kcal · ${Math.round(w*2.0)}g protein</span></div>
+      <div class="target-row"><span>🏃 Run days (${runCount}×/wk)</span><span>${Math.round(w*29)} kcal · ${Math.round(w*1.7)}g protein</span></div>
+      <div class="target-row"><span>😴 Rest days</span><span>${Math.round(w*25)} kcal · ${Math.round(w*1.4)}g protein</span></div>
+    `;
+  }
+  function saveSettings() {
+    const w = parseFloat(document.getElementById('input-weight').value) || 70;
+    const h = parseFloat(document.getElementById('input-height').value) || 168;
+    const settings = {
+      weight: w, height: h,
+      workoutSchedule: currentSettings.workoutSchedule,
+      dailyCalorieTargets: { gym: Math.round(w*32), running: Math.round(w*29), rest: Math.round(w*25) },
+      dailyProteinTargets: { gym: Math.round(w*2.0), running: Math.round(w*1.7), rest: Math.round(w*1.4) },
+    };
+    localStorage.setItem('mealplanner-settings', JSON.stringify(settings));
+    const blob = new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = 'user_settings.json'; a.click();
+    showToast('✅ Settings saved! Move user_settings.json → data/ then run node preview.mjs');
+  }
+
+  // ── Toast ─────────────────────────────────────────────────────────────────
+  function showToast(msg, isError = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast' + (isError ? ' error' : '') + ' show';
+    setTimeout(() => { t.className = 'toast' + (isError ? ' error' : ''); }, 3500);
+  }
+
+  // ── Animate bars on load ─────────────────────────────────────────────────
+  document.querySelectorAll('.fill').forEach((el, i) => {
+    const w = el.style.width; el.style.width = '0%';
+    setTimeout(() => { el.style.width = w; }, 150 + i * 25);
+  });
+</script>
+</body>
+</html>

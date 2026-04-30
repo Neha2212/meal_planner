@@ -1,0 +1,23 @@
+{
+  "weight": 52,
+  "height": 154,
+  "workoutSchedule": {
+    "Monday": "gym",
+    "Tuesday": "gym",
+    "Wednesday": "running",
+    "Thursday": "rest",
+    "Friday": "gym",
+    "Saturday": "rest",
+    "Sunday": "running"
+  },
+  "dailyCalorieTargets": {
+    "gym": 1664,
+    "running": 1508,
+    "rest": 1300
+  },
+  "dailyProteinTargets": {
+    "gym": 104,
+    "running": 88,
+    "rest": 73
+  }
+}

@@ -1,0 +1,795 @@
+{
+  "weekId": "2026-W18",
+  "startDate": "2026-04-27",
+  "createdAt": "2026-04-29T15:53:45.156Z",
+  "updatedAt": "2026-04-30T23:34:02.624Z",
+  "userProfile": {
+    "diet": "vegetarian",
+    "cuisinePreferences": [
+      "indian",
+      "chinese",
+      "italian"
+    ],
+    "spiceLevel": "medium",
+    "fitnessGoal": "protein-rich, muscle maintenance",
+    "age": 30,
+    "weight": 70,
+    "height": 168,
+    "workoutSchedule": {
+      "Monday": "gym",
+      "Tuesday": "running",
+      "Wednesday": "gym",
+      "Thursday": "rest",
+      "Friday": "gym",
+      "Saturday": "running",
+      "Sunday": "rest"
+    },
+    "dailyCalorieTargets": {
+      "gym": 2240,
+      "running": 2030,
+      "rest": 1750
+    },
+    "dailyProteinTargets": {
+      "gym": 140,
+      "running": 119,
+      "rest": 98
+    }
+  },
+  "days": {
+    "Monday": {
+      "date": "2026-04-27",
+      "dayOfWeek": "Monday",
+      "workoutType": "gym",
+      "calorieTarget": 2240,
+      "proteinTarget": 140,
+      "breakfast": {
+        "id": "b-chi-001",
+        "name": "Tofu Scramble",
+        "cuisine": "chinese",
+        "mealType": [
+          "breakfast"
+        ],
+        "prepTime": 12,
+        "macros": {
+          "calories": 280,
+          "protein": 20,
+          "carbs": 12,
+          "fat": 14
+        },
+        "spiceLevel": "mild",
+        "ingredients": [
+          "firm tofu",
+          "turmeric",
+          "nutritional yeast",
+          "capsicum",
+          "soy sauce",
+          "spring onion"
+        ],
+        "description": "Silky scrambled tofu seasoned to golden perfection.",
+        "tags": [
+          "high-protein",
+          "low-carb",
+          "gym-day"
+        ],
+        "emoji": "🥢"
+      },
+      "lunch": {
+        "id": "l-ita-001",
+        "name": "Rigatoni Lentil Bolognese",
+        "cuisine": "italian",
+        "mealType": [
+          "lunch",
+          "dinner"
+        ],
+        "prepTime": 40,
+        "macros": {
+          "calories": 700,
+          "protein": 28,
+          "carbs": 100,
+          "fat": 14
+        },
+        "spiceLevel": "mild",
+        "ingredients": [
+          "rigatoni",
+          "green lentils",
+          "tomatoes",
+          "carrot",
+          "celery",
+          "red wine",
+          "parmesan",
+          "basil"
+        ],
+        "description": "Hearty lentil bolognese on thick rigatoni with parmesan.",
+        "tags": [
+          "high-protein",
+          "gym-day",
+          "comfort-food"
+        ],
+        "emoji": "🍝"
+      },
+      "dinner": {
+        "id": "l-ind-001",
+        "name": "Dal Makhani + Roti + Salad",
+        "cuisine": "indian",
+        "mealType": [
+          "lunch",
+          "dinner"
+        ],
+        "prepTime": 45,
+        "macros": {
+          "calories": 650,
+          "protein": 28,
+          "carbs": 82,
+          "fat": 18
+        },
+        "spiceLevel": "medium",
+        "ingredients": [
+          "whole black lentils",
+          "rajma",
+          "butter",
+          "cream",
+          "tomato",
+          "ginger-garlic",
+          "whole wheat roti",
+          "onion salad"
+        ],
+        "description": "Slow-cooked creamy black lentils with rich buttery gravy.",
+        "tags": [
+          "high-protein",
+          "gym-day",
+          "classic"
+        ],
+        "emoji": "🍛"
+      },
+      "totalCalories": 1630,
+      "totalProtein": 76,
+      "totalCarbs": 194,
+      "totalFat": 46
+    },
+    "Tuesday": {
+      "date": "2026-04-28",
+      "dayOfWeek": "Tuesday",
+      "workoutType": "running",
+      "calorieTarget": 2030,
+      "proteinTarget": 119,
+      "breakfast": {
+        "id": "b-ind-005",
+        "name": "Poha with Peanuts",
+        "cuisine": "indian",
+        "mealType": [
+          "breakfast"
+        ],
+        "prepTime": 15,
+        "macros": {
+          "calories": 310,
+          "protein": 10,
+          "carbs": 48,
+          "fat": 9
+        },
+        "spiceLevel": "mild",
+        "ingredients": [
+          "flattened rice",
+          "peanuts",
+          "mustard seeds",
+          "curry leaves",
+          "onion",
+          "turmeric",
+          "lemon"
+        ],
+        "description": "Classic beaten rice with crunchy peanuts and mustard tempering.",
+        "tags": [
+          "carb-boost",
+          "running-day",
+          "quick"
+        ],
+        "emoji": "🍚"
+      },
+      "lunch": {
+        "id": "l-ind-002",
+        "name": "Rajma Chawal + Raita",
+        "cuisine": "indian",
+        "mealType": [
+          "lunch",
+          "dinner"
+        ],
+        "prepTime": 40,
+        "macros": {
+          "calories": 700,
+          "protein": 25,
+          "carbs": 110,
+          "fat": 12
+        },
+        "spiceLevel": "medium",
+        "ingredients": [
+          "kidney beans",
+          "basmati rice",
+          "tomato",
+          "onion",
+          "ginger",
+          "garam masala",
+          "yogurt raita"
+        ],
+        "description": "North Indian kidney bean curry over basmati with cooling raita.",
+        "tags": [
+          "high-carb",
+          "running-day",
+          "comfort-food"
+        ],
+        "emoji": "🫘"
+      },
+      "dinner": {
+        "id": "l-chi-001",
+        "name": "Tofu Fried Rice + Veg Soup",
+        "cuisine": "chinese",
+        "mealType": [
+          "lunch",
+          "dinner"
+        ],
+        "prepTime": 25,
+        "macros": {
+          "calories": 620,
+          "protein": 22,
+          "carbs": 90,
+          "fat": 14
+        },
+        "spiceLevel": "mild",
+        "ingredients": [
+          "tofu",
+          "cooked rice",
+          "soy sauce",
+          "sesame oil",
+          "spring onion",
+          "carrot",
+          "peas",
+          "veg broth"
+        ],
+        "description": "Wok-tossed tofu and vegetable fried rice with clear soup.",
+        "tags": [
+          "high-carb",
+          "running-day",
+          "quick"
+        ],
+        "emoji": "🍳"
+      },
+      "totalCalories": 1630,
+      "totalProtein": 57,
+      "totalCarbs": 248,
+      "totalFat": 35
+    },
+    "Wednesday": {
+      "date": "2026-04-29",
+      "dayOfWeek": "Wednesday",
+      "workoutType": "gym",
+      "calorieTarget": 2240,
+      "proteinTarget": 140,
+      "breakfast": {
+        "id": "b-ind-001",
+        "name": "Moong Dal Chilla",
+        "cuisine": "indian",
+        "mealType": [
+          "breakfast"
+        ],
+        "prepTime": 20,
+        "macros": {
+          "calories": 320,
+          "protein": 18,
+          "carbs": 38,
+          "fat": 8
+        },
+        "spiceLevel": "medium",
+        "ingredients": [
+          "moong dal",
+          "onion",
+          "green chilli",
+          "ginger",
+          "cumin",
+          "coriander",
+          "oil"
+        ],
+        "description": "Protein-packed savoury lentil crepes with herbs and spices.",
+        "tags": [
+          "high-protein",
+          "quick",
+          "gym-day"
+        ],
+        "emoji": "🥞"
+      },
+      "lunch": {
+        "id": "l-ita-004",
+        "name": "Pasta e Fagioli",
+        "cuisine": "italian",
+        "mealType": [
+          "lunch",
+          "dinner"
+        ],
+        "prepTime": 35,
+        "macros": {
+          "calories": 620,
+          "protein": 25,
+          "carbs": 90,
+          "fat": 12
+        },
+        "spiceLevel": "mild",
+        "ingredients": [
+          "ditalini pasta",
+          "cannellini beans",
+          "tomatoes",
+          "rosemary",
+          "garlic",
+          "parmesan",
+          "olive oil"
+        ],
+        "description": "Tuscan pasta and bean soup — rustic, hearty, and nourishing.",
+        "tags": [
+          "high-protein",
+          "gym-day",
+          "comforting"
+        ],
+        "emoji": "🫘"
+      },
+      "dinner": {
+        "id": "l-ind-003",
+        "name": "Paneer Tikka Masala + Roti",
+        "cuisine": "indian",
+        "mealType": [
+          "lunch",
+          "dinner"
+        ],
+        "prepTime": 40,
+        "macros": {
+          "calories": 750,
+          "protein": 35,
+          "carbs": 65,
+          "fat": 28
+        },
+        "spiceLevel": "medium",
+        "ingredients": [
+          "paneer",
+          "yogurt marinade",
+          "tomato gravy",
+          "cream",
+          "kasuri methi",
+          "whole wheat roti"
+        ],
+        "description": "Chargrilled paneer in velvety spiced tomato-cream sauce.",
+        "tags": [
+          "high-protein",
+          "gym-day",
+          "restaurant-style"
+        ],
+        "emoji": "🟠"
+      },
+      "totalCalories": 1690,
+      "totalProtein": 78,
+      "totalCarbs": 193,
+      "totalFat": 48
+    },
+    "Thursday": {
+      "date": "2026-04-30",
+      "dayOfWeek": "Thursday",
+      "workoutType": "rest",
+      "calorieTarget": 1750,
+      "proteinTarget": 98,
+      "breakfast": {
+        "id": "b-ind-002",
+        "name": "Besan Cheela with Paneer",
+        "cuisine": "indian",
+        "mealType": [
+          "breakfast"
+        ],
+        "prepTime": 15,
+        "macros": {
+          "calories": 360,
+          "protein": 22,
+          "carbs": 30,
+          "fat": 12
+        },
+        "spiceLevel": "medium",
+        "ingredients": [
+          "besan",
+          "paneer",
+          "onion",
+          "tomato",
+          "green chilli",
+          "turmeric",
+          "ajwain"
+        ],
+        "description": "Crispy chickpea flour crepes stuffed with spiced paneer.",
+        "tags": [
+          "high-protein",
+          "gym-day",
+          "filling"
+        ],
+        "emoji": "🥚"
+      },
+      "lunch": {
+        "id": "l-chi-004",
+        "name": "Veg Dimsum + Miso Broth",
+        "cuisine": "chinese",
+        "mealType": [
+          "lunch"
+        ],
+        "prepTime": 35,
+        "macros": {
+          "calories": 550,
+          "protein": 20,
+          "carbs": 72,
+          "fat": 12
+        },
+        "spiceLevel": "mild",
+        "ingredients": [
+          "dumpling wrappers",
+          "tofu",
+          "cabbage",
+          "mushroom",
+          "ginger",
+          "sesame",
+          "miso",
+          "seaweed"
+        ],
+        "description": "Steamed dumplings filled with tofu and vegetables in umami broth.",
+        "tags": [
+          "light",
+          "rest-day",
+          "elegant"
+        ],
+        "emoji": "🥟"
+      },
+      "dinner": {
+        "id": "d-ind-006",
+        "name": "Mixed Dal Khichdi + Papad",
+        "cuisine": "indian",
+        "mealType": [
+          "dinner"
+        ],
+        "prepTime": 30,
+        "macros": {
+          "calories": 560,
+          "protein": 22,
+          "carbs": 88,
+          "fat": 10
+        },
+        "spiceLevel": "mild",
+        "ingredients": [
+          "moong dal",
+          "masoor dal",
+          "rice",
+          "ghee",
+          "cumin",
+          "turmeric",
+          "papad"
+        ],
+        "description": "One-pot comfort rice and lentil dish — light, warm, and nourishing.",
+        "tags": [
+          "rest-day",
+          "recovery",
+          "easy-digest"
+        ],
+        "emoji": "🍵"
+      },
+      "totalCalories": 1470,
+      "totalProtein": 64,
+      "totalCarbs": 172,
+      "totalFat": 40
+    },
+    "Friday": {
+      "date": "2026-05-01",
+      "dayOfWeek": "Friday",
+      "workoutType": "gym",
+      "calorieTarget": 2240,
+      "proteinTarget": 140,
+      "breakfast": {
+        "id": "b-ind-003",
+        "name": "Paneer Bhurji Toast",
+        "cuisine": "indian",
+        "mealType": [
+          "breakfast"
+        ],
+        "prepTime": 15,
+        "macros": {
+          "calories": 380,
+          "protein": 24,
+          "carbs": 28,
+          "fat": 16
+        },
+        "spiceLevel": "medium",
+        "ingredients": [
+          "paneer",
+          "onion",
+          "capsicum",
+          "tomato",
+          "cumin",
+          "garam masala",
+          "whole wheat toast"
+        ],
+        "description": "Scrambled paneer with veggies on whole wheat toast.",
+        "tags": [
+          "high-protein",
+          "gym-day"
+        ],
+        "emoji": "🍞"
+      },
+      "lunch": {
+        "id": "l-ind-005",
+        "name": "Tofu Bhurji + Roti + Dal",
+        "cuisine": "indian",
+        "mealType": [
+          "lunch"
+        ],
+        "prepTime": 25,
+        "macros": {
+          "calories": 620,
+          "protein": 30,
+          "carbs": 60,
+          "fat": 20
+        },
+        "spiceLevel": "medium",
+        "ingredients": [
+          "firm tofu",
+          "onion",
+          "tomato",
+          "peas",
+          "garam masala",
+          "roti",
+          "moong dal"
+        ],
+        "description": "Indian-spiced tofu scramble with simple moong dal and roti.",
+        "tags": [
+          "high-protein",
+          "gym-day",
+          "quick"
+        ],
+        "emoji": "🥬"
+      },
+      "dinner": {
+        "id": "l-ind-006",
+        "name": "Methi Paneer + Roti + Dal",
+        "cuisine": "indian",
+        "mealType": [
+          "lunch",
+          "dinner"
+        ],
+        "prepTime": 30,
+        "macros": {
+          "calories": 700,
+          "protein": 32,
+          "carbs": 68,
+          "fat": 26
+        },
+        "spiceLevel": "medium",
+        "ingredients": [
+          "paneer",
+          "fresh fenugreek",
+          "onion",
+          "tomato",
+          "cream",
+          "roti",
+          "toor dal"
+        ],
+        "description": "Paneer with slightly bitter fenugreek in rich gravy.",
+        "tags": [
+          "high-protein",
+          "gym-day"
+        ],
+        "emoji": "🌿"
+      },
+      "totalCalories": 1700,
+      "totalProtein": 86,
+      "totalCarbs": 156,
+      "totalFat": 62
+    },
+    "Saturday": {
+      "date": "2026-05-02",
+      "dayOfWeek": "Saturday",
+      "workoutType": "running",
+      "calorieTarget": 2030,
+      "proteinTarget": 119,
+      "breakfast": {
+        "id": "b-ind-004",
+        "name": "Sprout Chaat",
+        "cuisine": "indian",
+        "mealType": [
+          "breakfast"
+        ],
+        "prepTime": 10,
+        "macros": {
+          "calories": 220,
+          "protein": 14,
+          "carbs": 32,
+          "fat": 4
+        },
+        "spiceLevel": "mild",
+        "ingredients": [
+          "mixed sprouts",
+          "tomato",
+          "onion",
+          "lemon",
+          "chaat masala",
+          "coriander",
+          "pomegranate"
+        ],
+        "description": "Light and refreshing sprouted lentil salad with tangy dressing.",
+        "tags": [
+          "light",
+          "running-day",
+          "no-cook"
+        ],
+        "emoji": "🌱"
+      },
+      "lunch": {
+        "id": "l-ind-004",
+        "name": "Chana Masala + Jeera Rice",
+        "cuisine": "indian",
+        "mealType": [
+          "lunch",
+          "dinner"
+        ],
+        "prepTime": 35,
+        "macros": {
+          "calories": 680,
+          "protein": 22,
+          "carbs": 105,
+          "fat": 14
+        },
+        "spiceLevel": "medium",
+        "ingredients": [
+          "chickpeas",
+          "onion",
+          "tomato",
+          "anardana",
+          "cumin rice",
+          "coriander",
+          "lemon"
+        ],
+        "description": "Tangy spiced chickpea curry with fragrant cumin rice.",
+        "tags": [
+          "high-carb",
+          "running-day",
+          "vegan"
+        ],
+        "emoji": "🟡"
+      },
+      "dinner": {
+        "id": "d-chi-001",
+        "name": "Veg Lo Mein with Tofu",
+        "cuisine": "chinese",
+        "mealType": [
+          "dinner",
+          "lunch"
+        ],
+        "prepTime": 25,
+        "macros": {
+          "calories": 580,
+          "protein": 25,
+          "carbs": 80,
+          "fat": 14
+        },
+        "spiceLevel": "mild",
+        "ingredients": [
+          "lo mein noodles",
+          "firm tofu",
+          "bok choy",
+          "mushrooms",
+          "soy sauce",
+          "sesame oil",
+          "garlic"
+        ],
+        "description": "Silky noodles tossed with tofu and fresh vegetables in umami sauce.",
+        "tags": [
+          "high-protein",
+          "gym-day",
+          "noodles"
+        ],
+        "emoji": "🍜"
+      },
+      "totalCalories": 1480,
+      "totalProtein": 61,
+      "totalCarbs": 217,
+      "totalFat": 32
+    },
+    "Sunday": {
+      "date": "2026-05-03",
+      "dayOfWeek": "Sunday",
+      "workoutType": "rest",
+      "calorieTarget": 1750,
+      "proteinTarget": 98,
+      "breakfast": {
+        "id": "b-ind-006",
+        "name": "Idli Sambar",
+        "cuisine": "indian",
+        "mealType": [
+          "breakfast"
+        ],
+        "prepTime": 10,
+        "macros": {
+          "calories": 280,
+          "protein": 10,
+          "carbs": 50,
+          "fat": 4
+        },
+        "spiceLevel": "mild",
+        "ingredients": [
+          "idli batter",
+          "toor dal",
+          "tamarind",
+          "tomato",
+          "mixed vegetables",
+          "sambar powder"
+        ],
+        "description": "Soft steamed rice cakes with hearty lentil vegetable soup.",
+        "tags": [
+          "light",
+          "carb-boost",
+          "rest-day"
+        ],
+        "emoji": "🫓"
+      },
+      "lunch": {
+        "id": "l-ind-007",
+        "name": "Kadhi Pakora + Rice",
+        "cuisine": "indian",
+        "mealType": [
+          "lunch",
+          "dinner"
+        ],
+        "prepTime": 40,
+        "macros": {
+          "calories": 580,
+          "protein": 16,
+          "carbs": 88,
+          "fat": 18
+        },
+        "spiceLevel": "mild",
+        "ingredients": [
+          "yogurt",
+          "besan",
+          "pakora",
+          "mustard seeds",
+          "curry leaves",
+          "basmati rice"
+        ],
+        "description": "Tangy yogurt-besan curry with fried pakora fritters over rice.",
+        "tags": [
+          "comfort-food",
+          "rest-day"
+        ],
+        "emoji": "🍲"
+      },
+      "dinner": {
+        "id": "d-ind-004",
+        "name": "Aloo Gobi + Roti + Dal",
+        "cuisine": "indian",
+        "mealType": [
+          "dinner"
+        ],
+        "prepTime": 30,
+        "macros": {
+          "calories": 550,
+          "protein": 18,
+          "carbs": 80,
+          "fat": 14
+        },
+        "spiceLevel": "medium",
+        "ingredients": [
+          "potato",
+          "cauliflower",
+          "turmeric",
+          "coriander powder",
+          "roti",
+          "moong dal"
+        ],
+        "description": "Dry spiced potato and cauliflower with simple lentil dal.",
+        "tags": [
+          "rest-day",
+          "light",
+          "classic"
+        ],
+        "emoji": "🥦"
+      },
+      "totalCalories": 1410,
+      "totalProtein": 44,
+      "totalCarbs": 218,
+      "totalFat": 36
+    }
+  }
+}
