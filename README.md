@@ -78,23 +78,6 @@ Restart Claude Desktop. You should see the 3 tools appear.
 
 ---
 
-## 🎬 Demo Prompt (Assignment Submission)
-
-Paste this exactly into Claude Desktop:
-
-> **"I'm a 30-year-old vegetarian who loves Indian food and is also open to Chinese and Italian. I go to the gym 3 days a week (Mon, Wed, Fri) and run on Tue and Sat. I'm on a protein-rich diet. Please plan my meals for the full week — breakfast, lunch, and dinner each day — with medium spice. Save the plan to a file, then show me the full dashboard."**
-
-**What the agent does:**
-1. Calls `fetch_recipes` for each meal type to build a recipe pool
-2. Calls `manage_meal_plan` with `operation: "create"` → writes `meal_plan.json`
-3. Calls `show_meal_plan_ui` → pushes the interactive HTML dashboard via MCP-UI
-
-**Follow-up prompts to demo shuffle:**
-> "I don't like Wednesday's lunch — shuffle it for me and show me the updated dashboard."
-
-> "Give me a new breakfast option for Saturday."
-
----
 
 ## 🛠️ Tool Reference
 
