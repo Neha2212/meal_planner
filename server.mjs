@@ -203,8 +203,11 @@ app.post('/api/chat', async (req, res) => {
       const responses = [];
       for (const call of result.response.functionCalls()) {
         const fnResult = await callMCPTool(call.name, call.args);
-        // Detect plan mutations
-        if (['manage_meal_plan'].includes(call.name) && fnResult?.success) planUpdated = true;
+        // Only reload the dashboard for operations that actually change the plan
+        const MUTATING_OPS = ['create', 'update', 'delete', 'shuffle'];
+        if (call.name === 'manage_meal_plan' && fnResult?.success && MUTATING_OPS.includes(call.args?.operation)) {
+          planUpdated = true;
+        }
         responses.push({ functionResponse: { name: call.name, response: fnResult } });
       }
       result = await chat.sendMessage(responses);
