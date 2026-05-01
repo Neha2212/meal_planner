@@ -1,0 +1,93 @@
+{"ts":"2026-05-01T00:12:19.248Z","level":"info","type":"llm-request","tool":"gemini-3.1-flash-lite-preview","input":{"message":"Help me with a grocery list for monday","sessionId":"wmf1ntpomb","historyLength":0}}
+{"ts":"2026-05-01T00:12:20.975Z","level":"info","type":"llm-response","tool":"gemini-3.1-flash-lite-preview","output":{"replyChars":865,"planUpdated":false},"durationMs":1726}
+{"ts":"2026-05-01T00:12:30.004Z","level":"info","type":"llm-request","tool":"gemini-3.1-flash-lite-preview","input":{"message":"Shuffle Monday lunch to something easy","sessionId":"wmf1ntpomb","historyLength":2}}
+{"ts":"2026-05-01T00:12:30.739Z","level":"info","type":"llm-function-call","tool":"shuffle_meal","input":{"day":"Monday","mealType":"lunch"}}
+{"ts":"2026-05-01T00:12:30.741Z","level":"info","type":"llm-function-result","tool":"shuffle_meal","output":{"success":true,"message":"🔀 Shuffled Monday lunch: \"Rigatoni Lentil Bolognese\" → \"Palak Paneer + Roti\""}}
+{"ts":"2026-05-01T00:12:31.791Z","level":"info","type":"llm-response","tool":"gemini-3.1-flash-lite-preview","output":{"replyChars":198,"planUpdated":true},"durationMs":1787}
+{"ts":"2026-05-01T00:18:18.241Z","level":"info","type":"system","output":"MCP server starting"}
+{"ts":"2026-05-01T00:18:18.243Z","level":"info","type":"system","output":"MCP server connected and ready"}
+{"ts":"2026-05-01T00:18:18.249Z","level":"info","type":"system","output":"MCP client connected — tools: fetch_recipes, manage_meal_plan, show_meal_plan_ui"}
+{"ts":"2026-05-01T00:18:42.416Z","level":"info","type":"llm-request","tool":"gemini-3.1-flash-lite-preview","input":{"message":"Help me with grocery list for monday's meals","sessionId":"xc9hst4al","historyLength":0}}
+{"ts":"2026-05-01T00:18:42.546Z","level":"error","type":"llm-response","tool":"gemini-3.1-flash-lite-preview","error":"[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite-preview:generateContent: [400 Bad Request] Invalid JSON payload received. Unknown name \"additionalProperties\" at 'tools[0].function_declarations[0].parameters': Cannot find field.\nInvalid JSON payload received. Unknown name \"$schema\" at 'tools[0].function_declarations[0].parameters': Cannot find field.\nInvalid JSON payload received. Unknown name \"additionalProperties\" at 'tools[0].function_declarations[1].parameters': Cannot find field.\nInvalid JSON payload received. Unknown name \"$schema\" at 'tools[0].function_declarations[1].parameters': Cannot find field.\nInvalid JSON payload received. Unknown name \"additionalProperties\" at 'tools[0].function_declarations[2].parameters': Cannot find field.\nInvalid JSON payload received. Unknown name \"$schema\" at 'tools[0].function_declarations[2].parameters': Cannot find field. [{\"@type\":\"type.googleapis.com/google.rpc.BadRequest\",\"fieldViolations\":[{\"field\":\"tools[0].function_declarations[0].parameters\",\"description\":\"Invalid JSON payload received. Unknown name \\\"additionalProperties\\\" at 'tools[0].function_declarations[0].parameters': Cannot find field.\"},{\"field\":\"tools[0].function_declarations[0].parameters\",\"description\":\"Invalid JSON payload received. Unknown name \\\"$schema\\\" at 'tools[0].function_declarations[0].parameters': Cannot find field.\"},{\"field\":\"tools[0].function_declarations[1].parameters\",\"description\":\"Invalid JSON payload received. Unknown name \\\"additionalProperties\\\" at 'tools[0].function_declarations[1].parameters': Cannot find field.\"},{\"field\":\"tools[0].function_declarations[1].parameters\",\"description\":\"Invalid JSON payload received. Unknown name \\\"$schema\\\" at 'tools[0].function_declarations[1].parameters': Cannot find field.\"},{\"field\":\"tools[0].function_declarations[2].parameters\",\"description\":\"Invalid JSON payload received. Unknown name \\\"additionalProperties\\\" at 'tools[0].function_declarations[2].parameters': Cannot find field.\"},{\"field\":\"tools[0].function_declarations[2].parameters\",\"description\":\"Invalid JSON payload received. Unknown name \\\"$schema\\\" at 'tools[0].function_declarations[2].parameters': Cannot find field.\"}]}]"}
+{"ts":"2026-05-01T00:19:29.909Z","level":"info","type":"system","output":"MCP server starting"}
+{"ts":"2026-05-01T00:19:29.911Z","level":"info","type":"system","output":"MCP server connected and ready"}
+{"ts":"2026-05-01T00:19:29.918Z","level":"info","type":"system","output":"MCP client connected — tools: fetch_recipes, manage_meal_plan, show_meal_plan_ui"}
+{"ts":"2026-05-01T00:19:59.691Z","level":"info","type":"llm-request","tool":"gemini-3.1-flash-lite-preview","input":{"message":"help me with grocery list for monday's lunch","sessionId":"3vnbk9b3x2f","historyLength":0}}
+{"ts":"2026-05-01T00:20:00.486Z","level":"info","type":"mcp-tool-call","tool":"fetch_recipes","input":{"query":"Palak Paneer and Roti","mealType":"lunch"}}
+{"ts":"2026-05-01T00:20:00.489Z","level":"info","type":"mcp-tool-call","tool":"fetch_recipes","input":{"mealType":"lunch","query":"Palak Paneer and Roti"}}
+{"ts":"2026-05-01T00:20:00.792Z","level":"info","type":"mcp-tool-result","tool":"fetch_recipes","output":{"source":"local","count":8},"durationMs":302}
+{"ts":"2026-05-01T00:20:00.794Z","level":"info","type":"mcp-tool-result","tool":"fetch_recipes","output":{"chars":3091},"durationMs":307}
+{"ts":"2026-05-01T00:20:01.963Z","level":"info","type":"llm-response","tool":"gemini-3.1-flash-lite-preview","output":{"replyChars":614,"planUpdated":false},"durationMs":2271}
+{"ts":"2026-05-01T00:20:24.483Z","level":"info","type":"llm-request","tool":"gemini-3.1-flash-lite-preview","input":{"message":"can you shuffle tuesday breakfast to something easy?","sessionId":"3vnbk9b3x2f","historyLength":2}}
+{"ts":"2026-05-01T00:20:25.249Z","level":"info","type":"mcp-tool-call","tool":"manage_meal_plan","input":{"mealType":"breakfast","day":"Tuesday","operation":"shuffle"}}
+{"ts":"2026-05-01T00:20:25.251Z","level":"info","type":"mcp-tool-call","tool":"manage_meal_plan","input":{"operation":"shuffle","day":"Tuesday","mealType":"breakfast"}}
+{"ts":"2026-05-01T00:20:25.254Z","level":"info","type":"mcp-tool-result","tool":"manage_meal_plan","output":{"success":true,"message":"🔀 Shuffled Tuesday breakfast: \"Poha with Peanuts\" → \"Overnight Oats with Chia\""},"durationMs":2}
+{"ts":"2026-05-01T00:20:25.255Z","level":"info","type":"mcp-tool-result","tool":"manage_meal_plan","output":{"chars":756},"durationMs":6}
+{"ts":"2026-05-01T00:20:26.355Z","level":"info","type":"llm-response","tool":"gemini-3.1-flash-lite-preview","output":{"replyChars":499,"planUpdated":true},"durationMs":1872}
+{"ts":"2026-05-01T00:31:05.236Z","level":"info","type":"llm-request","tool":"gemini-3.1-flash-lite-preview","input":{"message":"shuffle wednesday dinner to something more balanced with rest of the meals I am having that day","sessionId":"pe0br9ke1sg","historyLength":0}}
+{"ts":"2026-05-01T00:31:05.871Z","level":"info","type":"mcp-tool-call","tool":"manage_meal_plan","input":{"mealType":"dinner","operation":"shuffle","day":"Wednesday"}}
+{"ts":"2026-05-01T00:31:05.875Z","level":"info","type":"mcp-tool-call","tool":"manage_meal_plan","input":{"operation":"shuffle","day":"Wednesday","mealType":"dinner"}}
+{"ts":"2026-05-01T00:31:05.877Z","level":"info","type":"mcp-tool-result","tool":"manage_meal_plan","output":{"success":true,"message":"🔀 Shuffled Wednesday dinner: \"Paneer Tikka Masala + Roti\" → \"Penne Arrabbiata + Insalata\""},"durationMs":2}
+{"ts":"2026-05-01T00:31:05.879Z","level":"info","type":"mcp-tool-result","tool":"manage_meal_plan","output":{"chars":777},"durationMs":8}
+{"ts":"2026-05-01T00:31:06.849Z","level":"info","type":"llm-response","tool":"gemini-3.1-flash-lite-preview","output":{"replyChars":307,"planUpdated":true},"durationMs":1612}
+{"ts":"2026-05-01T00:45:05.305Z","level":"info","type":"llm-request","tool":"gemini-3.1-flash-lite-preview","input":{"message":"get me grocery list for monday meal only","sessionId":"zhgn0rcfts","historyLength":0}}
+{"ts":"2026-05-01T00:45:05.951Z","level":"info","type":"mcp-tool-call","tool":"manage_meal_plan","input":{"operation":"read"}}
+{"ts":"2026-05-01T00:45:05.954Z","level":"info","type":"mcp-tool-call","tool":"manage_meal_plan","input":{"operation":"read"}}
+{"ts":"2026-05-01T00:45:05.955Z","level":"info","type":"mcp-tool-result","tool":"manage_meal_plan","output":{"success":true,"message":"📖 Loaded plan for week 2026-W18. Last updated: 2026-05-01T00:31:05.876Z"},"durationMs":1}
+{"ts":"2026-05-01T00:45:05.956Z","level":"info","type":"mcp-tool-result","tool":"manage_meal_plan","output":{"chars":2008},"durationMs":4}
+{"ts":"2026-05-01T00:45:07.194Z","level":"info","type":"llm-response","tool":"gemini-3.1-flash-lite-preview","output":{"replyChars":771,"planUpdated":true},"durationMs":1886}
+{"ts":"2026-05-01T00:46:29.405Z","level":"info","type":"llm-request","tool":"gemini-3.1-flash-lite-preview","input":{"message":"get me monday lunch grocery list","sessionId":"ierpm4l3tvj","historyLength":0}}
+{"ts":"2026-05-01T00:46:30.245Z","level":"info","type":"mcp-tool-call","tool":"fetch_recipes","input":{"mealType":"lunch","query":"Palak Paneer and Roti"}}
+{"ts":"2026-05-01T00:46:30.246Z","level":"info","type":"mcp-tool-call","tool":"fetch_recipes","input":{"mealType":"lunch","query":"Palak Paneer and Roti"}}
+{"ts":"2026-05-01T00:46:30.551Z","level":"info","type":"mcp-tool-result","tool":"fetch_recipes","output":{"source":"local","count":8},"durationMs":305}
+{"ts":"2026-05-01T00:46:30.552Z","level":"info","type":"mcp-tool-result","tool":"fetch_recipes","output":{"chars":3092},"durationMs":306}
+{"ts":"2026-05-01T00:46:31.698Z","level":"info","type":"llm-response","tool":"gemini-3.1-flash-lite-preview","output":{"replyChars":540,"planUpdated":false},"durationMs":2293}
+{"ts":"2026-05-01T00:48:47.566Z","level":"info","type":"system","output":"MCP server starting"}
+{"ts":"2026-05-01T00:48:47.567Z","level":"info","type":"system","output":"MCP server connected and ready"}
+{"ts":"2026-05-01T00:48:47.574Z","level":"info","type":"system","output":"MCP client connected — tools: fetch_recipes, manage_meal_plan, show_meal_plan_ui"}
+{"ts":"2026-05-01T00:49:32.487Z","level":"info","type":"llm-request","tool":"gemini-3.1-flash-lite-preview","input":{"message":"shuffle monday breakfast, balance calories","sessionId":"ruzwjvupzok","historyLength":0}}
+{"ts":"2026-05-01T00:49:33.225Z","level":"info","type":"mcp-tool-call","tool":"manage_meal_plan","input":{"operation":"shuffle","mealType":"breakfast","day":"Monday"}}
+{"ts":"2026-05-01T00:49:33.229Z","level":"info","type":"mcp-tool-call","tool":"manage_meal_plan","input":{"operation":"shuffle","day":"Monday","mealType":"breakfast"}}
+{"ts":"2026-05-01T00:49:33.231Z","level":"info","type":"mcp-tool-result","tool":"manage_meal_plan","output":{"success":true,"message":"🔀 Shuffled Monday breakfast: \"Tofu Scramble\" → \"Paneer Bhurji Toast\""},"durationMs":1}
+{"ts":"2026-05-01T00:49:33.234Z","level":"info","type":"mcp-tool-result","tool":"manage_meal_plan","output":{"chars":714},"durationMs":9}
+{"ts":"2026-05-01T00:49:34.283Z","level":"info","type":"llm-response","tool":"gemini-3.1-flash-lite-preview","output":{"replyChars":417,"planUpdated":true},"durationMs":1795}
+{"ts":"2026-05-01T00:50:07.410Z","level":"info","type":"llm-request","tool":"gemini-3.1-flash-lite-preview","input":{"message":"what is monday lunch grocery list?","sessionId":"ruzwjvupzok","historyLength":2}}
+{"ts":"2026-05-01T00:50:08.210Z","level":"info","type":"mcp-tool-call","tool":"fetch_recipes","input":{"query":"Palak Paneer and Roti","mealType":"lunch"}}
+{"ts":"2026-05-01T00:50:08.212Z","level":"info","type":"mcp-tool-call","tool":"fetch_recipes","input":{"mealType":"lunch","query":"Palak Paneer and Roti"}}
+{"ts":"2026-05-01T00:50:08.442Z","level":"info","type":"mcp-tool-result","tool":"fetch_recipes","output":{"source":"local","count":8},"durationMs":230}
+{"ts":"2026-05-01T00:50:08.443Z","level":"info","type":"mcp-tool-result","tool":"fetch_recipes","output":{"chars":3101},"durationMs":232}
+{"ts":"2026-05-01T00:50:09.706Z","level":"info","type":"llm-response","tool":"gemini-3.1-flash-lite-preview","output":{"replyChars":593,"planUpdated":false},"durationMs":2296}
+{"ts":"2026-05-01T00:54:05.839Z","level":"info","type":"llm-request","tool":"gemini-3.1-flash-lite-preview","input":{"message":"Get me wednesday lunch grocery list. Assume I have bare minimum","sessionId":"ruzwjvupzok","historyLength":4}}
+{"ts":"2026-05-01T00:54:06.586Z","level":"info","type":"mcp-tool-call","tool":"fetch_recipes","input":{"mealType":"lunch","query":"Pasta e Fagioli"}}
+{"ts":"2026-05-01T00:54:06.588Z","level":"info","type":"mcp-tool-call","tool":"fetch_recipes","input":{"mealType":"lunch","query":"Pasta e Fagioli"}}
+{"ts":"2026-05-01T00:54:06.917Z","level":"info","type":"mcp-tool-result","tool":"fetch_recipes","output":{"source":"local","count":8},"durationMs":328}
+{"ts":"2026-05-01T00:54:06.918Z","level":"info","type":"mcp-tool-result","tool":"fetch_recipes","output":{"chars":3075},"durationMs":331}
+{"ts":"2026-05-01T00:54:08.296Z","level":"info","type":"llm-response","tool":"gemini-3.1-flash-lite-preview","output":{"replyChars":756,"planUpdated":false},"durationMs":2456}
+{"ts":"2026-05-01T00:54:59.597Z","level":"info","type":"llm-request","tool":"gemini-3.1-flash-lite-preview","input":{"message":"Get me recipe for palak paneer","sessionId":"ruzwjvupzok","historyLength":6}}
+{"ts":"2026-05-01T00:55:00.235Z","level":"info","type":"mcp-tool-call","tool":"fetch_recipes","input":{"query":"palak paneer","cuisine":"indian","preferHighProtein":true,"mealType":"lunch"}}
+{"ts":"2026-05-01T00:55:00.237Z","level":"info","type":"mcp-tool-call","tool":"fetch_recipes","input":{"mealType":"lunch","cuisine":"indian","preferHighProtein":true,"query":"palak paneer"}}
+{"ts":"2026-05-01T00:55:00.422Z","level":"info","type":"mcp-tool-result","tool":"fetch_recipes","output":{"source":"api","count":1},"durationMs":184}
+{"ts":"2026-05-01T00:55:00.424Z","level":"info","type":"mcp-tool-result","tool":"fetch_recipes","output":{"chars":426},"durationMs":188}
+{"ts":"2026-05-01T00:55:02.319Z","level":"info","type":"llm-response","tool":"gemini-3.1-flash-lite-preview","output":{"replyChars":1385,"planUpdated":false},"durationMs":2721}
+{"ts":"2026-05-01T00:55:53.587Z","level":"info","type":"llm-request","tool":"gemini-3.1-flash-lite-preview","input":{"message":"Please shuffle tuesday lunch, balance the calories. Don't give indian cuisine option","sessionId":"ruzwjvupzok","historyLength":8}}
+{"ts":"2026-05-01T00:55:54.417Z","level":"info","type":"mcp-tool-call","tool":"fetch_recipes","input":{"mealType":"lunch","cuisine":"italian","query":"high protein vegetarian salad or bowl","preferHighProtein":true}}
+{"ts":"2026-05-01T00:55:54.421Z","level":"info","type":"mcp-tool-call","tool":"fetch_recipes","input":{"mealType":"lunch","cuisine":"italian","preferHighProtein":true,"query":"high protein vegetarian salad or bowl"}}
+{"ts":"2026-05-01T00:55:54.690Z","level":"info","type":"mcp-tool-result","tool":"fetch_recipes","output":{"source":"api","count":1},"durationMs":268}
+{"ts":"2026-05-01T00:55:54.691Z","level":"info","type":"mcp-tool-result","tool":"fetch_recipes","output":{"chars":429},"durationMs":273}
+{"ts":"2026-05-01T00:55:55.384Z","level":"info","type":"mcp-tool-call","tool":"manage_meal_plan","input":{"mealType":"lunch","recipeId":"spoon-1005368","day":"Tuesday","operation":"update"}}
+{"ts":"2026-05-01T00:55:55.385Z","level":"info","type":"mcp-tool-call","tool":"manage_meal_plan","input":{"operation":"update","day":"Tuesday","mealType":"lunch","recipeId":"spoon-1005368"}}
+{"ts":"2026-05-01T00:55:55.386Z","level":"info","type":"mcp-tool-result","tool":"manage_meal_plan","output":{"success":false,"message":"Recipe spoon-1005368 not found."},"durationMs":1}
+{"ts":"2026-05-01T00:55:55.386Z","level":"info","type":"mcp-tool-result","tool":"manage_meal_plan","output":{"chars":70},"durationMs":1}
+{"ts":"2026-05-01T00:55:56.256Z","level":"info","type":"mcp-tool-call","tool":"manage_meal_plan","input":{"day":"Tuesday","mealType":"lunch","operation":"shuffle"}}
+{"ts":"2026-05-01T00:55:56.257Z","level":"info","type":"mcp-tool-call","tool":"manage_meal_plan","input":{"operation":"shuffle","day":"Tuesday","mealType":"lunch"}}
+{"ts":"2026-05-01T00:55:56.257Z","level":"info","type":"mcp-tool-result","tool":"manage_meal_plan","output":{"success":true,"message":"🔀 Shuffled Tuesday lunch: \"Rajma Chawal + Raita\" → \"Chana Masala + Jeera Rice\""},"durationMs":0}
+{"ts":"2026-05-01T00:55:56.258Z","level":"info","type":"mcp-tool-result","tool":"manage_meal_plan","output":{"chars":754},"durationMs":2}
+{"ts":"2026-05-01T00:55:56.919Z","level":"info","type":"mcp-tool-call","tool":"fetch_recipes","input":{"query":"Chickpea and Quinoa salad","preferHighProtein":true,"cuisine":"italian","mealType":"lunch"}}
+{"ts":"2026-05-01T00:55:56.922Z","level":"info","type":"mcp-tool-call","tool":"fetch_recipes","input":{"mealType":"lunch","cuisine":"italian","preferHighProtein":true,"query":"Chickpea and Quinoa salad"}}
+{"ts":"2026-05-01T00:55:57.099Z","level":"info","type":"mcp-tool-result","tool":"fetch_recipes","output":{"source":"local","count":2},"durationMs":177}
+{"ts":"2026-05-01T00:55:57.101Z","level":"info","type":"mcp-tool-result","tool":"fetch_recipes","output":{"chars":867},"durationMs":181}
+{"ts":"2026-05-01T00:55:57.669Z","level":"info","type":"mcp-tool-call","tool":"manage_meal_plan","input":{"recipeId":"l-ita-001","operation":"update","mealType":"lunch","day":"Tuesday"}}
+{"ts":"2026-05-01T00:55:57.671Z","level":"info","type":"mcp-tool-call","tool":"manage_meal_plan","input":{"operation":"update","day":"Tuesday","mealType":"lunch","recipeId":"l-ita-001"}}
+{"ts":"2026-05-01T00:55:57.673Z","level":"info","type":"mcp-tool-result","tool":"manage_meal_plan","output":{"success":true,"message":"✏️ Updated Tuesday lunch: \"Chana Masala + Jeera Rice\" → \"Rigatoni Lentil Bolognese\""},"durationMs":1}
+{"ts":"2026-05-01T00:55:57.674Z","level":"info","type":"mcp-tool-result","tool":"manage_meal_plan","output":{"chars":2527},"durationMs":4}
+{"ts":"2026-05-01T00:55:58.742Z","level":"info","type":"llm-response","tool":"gemini-3.1-flash-lite-preview","output":{"replyChars":466,"planUpdated":true},"durationMs":5155}
